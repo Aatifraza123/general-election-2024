@@ -358,3 +358,18 @@
     transform: translateY(0);
   }
 }
+
+/* Mapbox popup styling */
+.india-map-popup .mapboxgl-popup-content {
+  background: hsl(var(--card));
+  color: hsl(var(--card-foreground));
+  border-radius: 0.5rem;
+  padding: 0;
+  box-shadow: var(--shadow-lg);
+  border: 1px solid hsl(var(--border));
+}
+
+.india-map-popup .mapboxgl-popup-tip {
+  border-top-color: hsl(var(--card));
+  border-bottom-color: hsl(var(--card));
+}
