@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
 import { StateBarChart } from '../dashboard/StateBarChart';
+import { IndiaMap } from '../dashboard/IndiaMap';
 import { PartyBadge } from '../dashboard/PartyBadge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { getPartyShortName, getPartyColor, formatNumber } from '@/lib/analytics';
@@ -66,6 +67,12 @@ export function StateTab({ stateStats, detailedData, states }: StateTabProps) {
 
       {selectedState === 'all' ? (
         <>
+          {/* India Map */}
+          <IndiaMap 
+            stateStats={stateStats} 
+            onStateClick={(state) => setSelectedState(state)}
+          />
+
           {/* States Overview */}
           <StateBarChart 
             data={stateStats} 
