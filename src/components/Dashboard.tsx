@@ -5,10 +5,11 @@ import { OverviewTab } from './tabs/OverviewTab';
 import { PartyTab } from './tabs/PartyTab';
 import { StateTab } from './tabs/StateTab';
 import { ConstituencyTab } from './tabs/ConstituencyTab';
+import { ElectionComparison } from './dashboard/ElectionComparison';
 import { useElectionData } from '@/hooks/useElectionData';
 import { AlertCircle } from 'lucide-react';
 
-type Tab = 'overview' | 'parties' | 'states' | 'constituencies';
+type Tab = 'overview' | 'parties' | 'states' | 'constituencies' | 'comparison';
 
 export function Dashboard() {
   const [activeTab, setActiveTab] = useState<Tab>('overview');
@@ -56,6 +57,10 @@ export function Dashboard() {
                 totalCandidates={totalCandidates}
                 totalParties={parties.length}
               />
+            )}
+
+            {activeTab === 'comparison' && (
+              <ElectionComparison partyStats={partyStats} />
             )}
             
             {activeTab === 'parties' && (

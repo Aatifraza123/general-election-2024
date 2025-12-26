@@ -7,14 +7,15 @@ import {
   Sun, 
   Moon,
   Menu,
-  X
+  X,
+  GitCompare
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { useTheme } from '@/contexts/ThemeContext';
 import { useState } from 'react';
 
-type Tab = 'overview' | 'parties' | 'states' | 'constituencies';
+type Tab = 'overview' | 'parties' | 'states' | 'constituencies' | 'comparison';
 
 interface HeaderProps {
   activeTab: Tab;
@@ -23,8 +24,9 @@ interface HeaderProps {
 
 const tabs: { id: Tab; label: string; icon: typeof LayoutDashboard }[] = [
   { id: 'overview', label: 'Overview', icon: LayoutDashboard },
-  { id: 'parties', label: 'Party Analysis', icon: Vote },
-  { id: 'states', label: 'State Breakdown', icon: Building2 },
+  { id: 'comparison', label: '2019 vs 2024', icon: GitCompare },
+  { id: 'parties', label: 'Parties', icon: Vote },
+  { id: 'states', label: 'States', icon: Building2 },
   { id: 'constituencies', label: 'Constituencies', icon: Users },
 ];
 
