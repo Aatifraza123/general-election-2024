@@ -6,10 +6,11 @@ import { PartyTab } from './tabs/PartyTab';
 import { StateTab } from './tabs/StateTab';
 import { ConstituencyTab } from './tabs/ConstituencyTab';
 import { ElectionComparison } from './dashboard/ElectionComparison';
+import { AIQueryPanel } from './dashboard/AIQueryPanel';
 import { useElectionData } from '@/hooks/useElectionData';
 import { AlertCircle } from 'lucide-react';
 
-type Tab = 'overview' | 'parties' | 'states' | 'constituencies' | 'comparison';
+type Tab = 'overview' | 'parties' | 'states' | 'constituencies' | 'comparison' | 'ai';
 
 export function Dashboard() {
   const [activeTab, setActiveTab] = useState<Tab>('overview');
@@ -57,6 +58,10 @@ export function Dashboard() {
                 totalCandidates={totalCandidates}
                 totalParties={parties.length}
               />
+            )}
+
+            {activeTab === 'ai' && (
+              <AIQueryPanel />
             )}
 
             {activeTab === 'comparison' && (
