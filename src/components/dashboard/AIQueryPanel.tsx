@@ -11,6 +11,105 @@ interface Message {
   content: string;
 }
 
+// Format AI response with better structure
+function formatAIResponse(content: string) {
+  // Split by double newlines for paragraphs
+  const sections = content.split(/\n\n+/);
+  
+  return sections.map((section, idx) => {
+    const trimmed = section.trim();
+    if (!trimmed) return null;
+    
+    // Check if it's a header (starts with === or ### or **)
+    if (trimmed.startsWith('===') || trimmed.startsWith('###')) {
+      const headerText = trimmed.replace(/^[=#]+\s*/, '').replace(/\s*[=#]+$/, '');
+      return (
+        <h4 key={idx} className="font-bold text-primary mt-3 mb-2 text-sm border-b border-border/50 pb-1">
+          {headerText}
+        </h4>
+      );
+    }
+    
+    // Check if it's a list (lines starting with - or •)
+    const lines = trimmed.split('\n');
+    const isList = lines.every(line => /^[-•*]\s/.test(line.trim()) || line.trim() === '');
+    
+    if (isList) {
+      return (
+        <ul key={idx} className="space-y-1.5 my-2">
+          {lines.filter(l => l.trim()).map((line, lineIdx) => {
+            const text = line.replace(/^[-•*]\s*/, '').trim();
+            // Parse bold text within list items
+            const parts = text.split(/(\*\*[^*]+\*\*)/g);
+            return (
+              <li key={lineIdx} className="flex items-start gap-2 text-sm">
+                <span className="text-primary mt-1.5 text-xs">●</span>
+                <span>
+                  {parts.map((part, pIdx) => {
+                    if (part.startsWith('**') && part.endsWith('**')) {
+                      return <strong key={pIdx} className="font-semibold text-foreground">{part.slice(2, -2)}</strong>;
+                    }
+                    return <span key={pIdx}>{part}</span>;
+                  })}
+                </span>
+              </li>
+            );
+          })}
+        </ul>
+      );
+    }
+    
+    // Check if it's a numbered list
+    const isNumberedList = lines.every(line => /^\d+[\.\)]\s/.test(line.trim()) || line.trim() === '');
+    
+    if (isNumberedList) {
+      return (
+        <ol key={idx} className="space-y-1.5 my-2">
+          {lines.filter(l => l.trim()).map((line, lineIdx) => {
+            const text = line.replace(/^\d+[\.\)]\s*/, '').trim();
+            const parts = text.split(/(\*\*[^*]+\*\*)/g);
+            return (
+              <li key={lineIdx} className="flex items-start gap-2 text-sm">
+                <span className="text-primary font-semibold min-w-[1.5rem]">{lineIdx + 1}.</span>
+                <span>
+                  {parts.map((part, pIdx) => {
+                    if (part.startsWith('**') && part.endsWith('**')) {
+                      return <strong key={pIdx} className="font-semibold text-foreground">{part.slice(2, -2)}</strong>;
+                    }
+                    return <span key={pIdx}>{part}</span>;
+                  })}
+                </span>
+              </li>
+            );
+          })}
+        </ol>
+      );
+    }
+    
+    // Regular paragraph - parse for bold text and line breaks
+    const processedLines = lines.map((line, lineIdx) => {
+      const parts = line.split(/(\*\*[^*]+\*\*)/g);
+      return (
+        <span key={lineIdx}>
+          {parts.map((part, pIdx) => {
+            if (part.startsWith('**') && part.endsWith('**')) {
+              return <strong key={pIdx} className="font-semibold text-foreground">{part.slice(2, -2)}</strong>;
+            }
+            return <span key={pIdx}>{part}</span>;
+          })}
+          {lineIdx < lines.length - 1 && <br />}
+        </span>
+      );
+    });
+    
+    return (
+      <p key={idx} className="text-sm leading-relaxed my-2">
+        {processedLines}
+      </p>
+    );
+  }).filter(Boolean);
+}
+
 const EXAMPLE_QUESTIONS = [
   "Which party won the most seats in South India?",
   "Compare BJP's 2024 performance with 2019",
@@ -135,7 +234,13 @@ export function AIQueryPanel() {
                       : 'bg-muted'
                   )}
                 >
-                  <p className="text-sm whitespace-pre-wrap leading-relaxed">{message.content}</p>
+                  {message.type === 'ai' ? (
+                    <div className="prose prose-sm dark:prose-invert max-w-none">
+                      {formatAIResponse(message.content)}
+                    </div>
+                  ) : (
+                    <p className="text-sm whitespace-pre-wrap leading-relaxed">{message.content}</p>
+                  )}
                 </div>
                 {message.type === 'user' && (
                   <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center flex-shrink-0">
