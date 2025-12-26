@@ -13,10 +13,13 @@ interface Message {
 
 const EXAMPLE_QUESTIONS = [
   "Which party won the most seats in South India?",
-  "How did BJP perform compared to 2019?",
-  "What were the closest election contests?",
-  "Which states did Congress gain seats in?",
-  "Explain the NDA vs INDIA bloc results",
+  "Compare BJP's 2024 performance with 2019",
+  "Who were the top candidates with highest victory margins?",
+  "Which states did Congress gain the most seats?",
+  "How did Rahul Gandhi and Modi perform in their constituencies?",
+  "What was SP's performance in Uttar Pradesh?",
+  "Explain the NDA vs INDIA bloc seat distribution",
+  "Which parties gained and lost the most seats?",
 ];
 
 export function AIQueryPanel() {
