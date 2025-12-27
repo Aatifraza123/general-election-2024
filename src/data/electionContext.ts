@@ -1,4 +1,9 @@
 // Comprehensive Election Data Context - Based on ACTUAL 2024 Results
+import { loadConstituencyWinners } from './loadConstituencyData';
+
+// Cache for constituency data
+let constituencyDataCache: string | null = null;
+
 export const ELECTION_CONTEXT = `You are an expert analyst for Indian General Elections 2024. You have COMPLETE and ACCURATE data from the official Election Commission results.
 
 CRITICAL INSTRUCTIONS FOR AI:
@@ -239,10 +244,18 @@ export const getAIAnswer = async (question: string, conversationHistory: Array<{
   const groqKey = import.meta.env.VITE_GROQ_API_KEY;
   const geminiKey = import.meta.env.VITE_GEMINI_API_KEY;
   
+  // Load constituency data if not cached
+  if (!constituencyDataCache) {
+    constituencyDataCache = await loadConstituencyWinners();
+  }
+  
+  // Combine base context with constituency data
+  const fullContext = ELECTION_CONTEXT + constituencyDataCache;
+  
   // Try Gemini first if key is available (for latest info)
   if (geminiKey) {
     try {
-      return await getGeminiAnswer(question, geminiKey, conversationHistory);
+      return await getGeminiAnswer(question, geminiKey, conversationHistory, fullContext);
     } catch (error) {
       console.warn('Gemini API failed, falling back to Groq:', error);
     }
@@ -257,7 +270,7 @@ export const getAIAnswer = async (question: string, conversationHistory: Array<{
     const messages = [
       { 
         role: 'system', 
-        content: `${ELECTION_CONTEXT}\n\nYou are an expert election analyst. Provide accurate, data-driven answers using ONLY the information provided above. Never make up data. If information is not available, clearly state that. IMPORTANT: Track conversation context - if user asks "he", "she", "his", "her", refer to the last person mentioned in the conversation.` 
+        content: `${fullContext}\n\nYou are an expert election analyst. Provide accurate, data-driven answers using ONLY the information provided above. Never make up data. If information is not available, clearly state that. IMPORTANT: Track conversation context - if user asks "he", "she", "his", "her", refer to the last person mentioned in the conversation.` 
       },
       ...conversationHistory,
       { role: 'user', content: question }
@@ -291,9 +304,9 @@ export const getAIAnswer = async (question: string, conversationHistory: Array<{
 };
 
 // Gemini AI for latest information (PRIMARY AI) - Using Gemini 2.0 Flash
-const getGeminiAnswer = async (question: string, apiKey: string, conversationHistory: Array<{role: string, content: string}> = []): Promise<string> => {
+const getGeminiAnswer = async (question: string, apiKey: string, conversationHistory: Array<{role: string, content: string}> = [], fullContext: string): Promise<string> => {
   try {
-    const systemPrompt = `${ELECTION_CONTEXT}
+    const systemPrompt = `${fullContext}
 
 CRITICAL INSTRUCTIONS FOR GEMINI AI:
 
