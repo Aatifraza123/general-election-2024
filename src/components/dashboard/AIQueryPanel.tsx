@@ -136,8 +136,14 @@ export function AIQueryPanel() {
     setIsLoading(true);
 
     try {
+      // Build conversation history for context tracking
+      const conversationHistory = messages.slice(-10).map(msg => ({
+        role: msg.type === 'user' ? 'user' : 'assistant',
+        content: msg.content
+      }));
+
       // Use Groq AI directly - no local fallback
-      const aiResponse = await getAIAnswer(questionText.trim());
+      const aiResponse = await getAIAnswer(questionText.trim(), conversationHistory);
       const aiMessage: Message = { type: 'ai', content: aiResponse };
       setMessages(prev => [...prev, aiMessage]);
 

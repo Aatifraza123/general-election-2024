@@ -291,7 +291,7 @@ export const getAIAnswer = async (question: string, conversationHistory: Array<{
 };
 
 // Gemini AI for latest information (PRIMARY AI) - Using Gemini 2.0 Flash
-const getGeminiAnswer = async (question: string, apiKey: string): Promise<string> => {
+const getGeminiAnswer = async (question: string, apiKey: string, conversationHistory: Array<{role: string, content: string}> = []): Promise<string> => {
   try {
     const systemPrompt = `${ELECTION_CONTEXT}
 
@@ -300,8 +300,9 @@ CRITICAL INSTRUCTIONS FOR GEMINI AI:
 1. CONTEXT AWARENESS:
    - ALWAYS remember the previous question in the conversation
    - If user asks "how many votes he got" after asking about PM, understand "he" = PM Modi
-   - Track pronouns (he, she, they) to previous entities mentioned
+   - Track pronouns (he, she, they, his, her) to previous entities mentioned
    - Maintain conversation context across multiple questions
+   - Review the conversation history below before answering
 
 2. ACCURACY RULES:
    - Use ONLY the data provided above for election-specific questions
@@ -444,6 +445,16 @@ CRITICAL INSTRUCTIONS FOR GEMINI AI:
    
    The NDA lost its single-party majority in 2024 and now depends on allies like TDP and JDU to form the government."`;
 
+    // Build conversation context string
+    let conversationContext = '';
+    if (conversationHistory.length > 0) {
+      conversationContext = '\n\n===CONVERSATION HISTORY===\n';
+      conversationHistory.forEach((msg, idx) => {
+        conversationContext += `${msg.role === 'user' ? 'USER' : 'ASSISTANT'}: ${msg.content}\n`;
+      });
+      conversationContext += '\n===END CONVERSATION HISTORY===\n\nBased on the conversation above, answer the following question while maintaining context:\n';
+    }
+
     // Try Gemini 2.0 Flash first (latest model)
     let response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${apiKey}`, {
       method: 'POST',
@@ -453,7 +464,7 @@ CRITICAL INSTRUCTIONS FOR GEMINI AI:
       body: JSON.stringify({
         contents: [{
           parts: [{
-            text: `${systemPrompt}\n\n===USER QUESTION===\n${question}\n\n===YOUR RESPONSE===\nProvide a comprehensive, accurate answer based strictly on the data provided above:`
+            text: `${systemPrompt}${conversationContext}\n\n===USER QUESTION===\n${question}\n\n===YOUR RESPONSE===\nProvide a comprehensive, accurate answer based strictly on the data provided above:`
           }]
         }],
         generationConfig: {
@@ -494,7 +505,7 @@ CRITICAL INSTRUCTIONS FOR GEMINI AI:
         body: JSON.stringify({
           contents: [{
             parts: [{
-              text: `${systemPrompt}\n\n===USER QUESTION===\n${question}\n\n===YOUR RESPONSE===\nProvide a comprehensive, accurate answer based strictly on the data provided above:`
+              text: `${systemPrompt}${conversationContext}\n\n===USER QUESTION===\n${question}\n\n===YOUR RESPONSE===\nProvide a comprehensive, accurate answer based strictly on the data provided above:`
             }]
           }],
           generationConfig: {
