@@ -5,15 +5,17 @@ import { OverviewTab } from './tabs/OverviewTab';
 import { PartyTab } from './tabs/PartyTab';
 import { StateTab } from './tabs/StateTab';
 import { ConstituencyTab } from './tabs/ConstituencyTab';
+import { ComparisonTab } from './tabs/ComparisonTab';
 import { ElectionComparison } from './dashboard/ElectionComparison';
 import { AIQueryPanel } from './dashboard/AIQueryPanel';
 import { useElectionData } from '@/hooks/useElectionData';
 import { AlertCircle } from 'lucide-react';
 
-type Tab = 'overview' | 'parties' | 'states' | 'constituencies' | 'comparison' | 'ai';
+type Tab = 'overview' | 'parties' | 'states' | 'constituencies' | 'comparison' | 'comparison2019' | 'ai';
 
 export function Dashboard() {
   const [activeTab, setActiveTab] = useState<Tab>('overview');
+  const [searchQuery, setSearchQuery] = useState<string>('');
   const {
     constituencyData,
     detailedData,
@@ -30,6 +32,17 @@ export function Dashboard() {
     error,
   } = useElectionData();
 
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+  };
+
+  // Clear search when changing tabs
+  const handleTabChange = (tab: Tab) => {
+    setActiveTab(tab);
+    // Optionally clear search when changing tabs
+    // setSearchQuery('');
+  };
+
   if (error) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen gap-4">
@@ -42,7 +55,7 @@ export function Dashboard() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header activeTab={activeTab} onTabChange={setActiveTab} />
+      <Header activeTab={activeTab} onTabChange={handleTabChange} onSearch={handleSearch} />
       
       <main className="container mx-auto px-4 py-6">
         {loading ? (
@@ -64,8 +77,19 @@ export function Dashboard() {
               <AIQueryPanel />
             )}
 
-            {activeTab === 'comparison' && (
+            {activeTab === 'comparison2019' && (
               <ElectionComparison partyStats={partyStats} />
+            )}
+
+            {activeTab === 'comparison' && (
+              <ComparisonTab
+                partyStats={partyStats}
+                constituencyData={constituencyData}
+                detailedData={detailedData}
+                stateStats={stateStats}
+                states={states}
+                parties={parties}
+              />
             )}
             
             {activeTab === 'parties' && (
@@ -73,6 +97,7 @@ export function Dashboard() {
                 partyStats={partyStats}
                 voteShare={voteShare}
                 constituencyData={constituencyData}
+                globalSearchQuery={searchQuery}
               />
             )}
             
@@ -81,6 +106,7 @@ export function Dashboard() {
                 stateStats={stateStats}
                 detailedData={detailedData}
                 states={states}
+                globalSearchQuery={searchQuery}
               />
             )}
             
@@ -89,6 +115,7 @@ export function Dashboard() {
                 constituencyData={constituencyData}
                 states={states}
                 parties={parties}
+                globalSearchQuery={searchQuery}
               />
             )}
           </>
@@ -98,11 +125,14 @@ export function Dashboard() {
       {/* Footer */}
       <footer className="border-t border-border py-6 mt-12">
         <div className="container mx-auto px-4 text-center text-sm text-muted-foreground">
-          <p>
-            Election Analytics Dashboard • Data from Election Commission of India 2024
+          <p className="flex items-center justify-center gap-2">
+            <span className="text-orange-500">🗳️</span>
+            <span className="font-semibold text-foreground">Insight Navigator</span>
+            <span>•</span>
+            <span>India Elections 2024</span>
           </p>
           <p className="mt-1">
-            Built with React, Recharts & Tailwind CSS
+            Data from Election Commission of India • Built with React, Recharts & Tailwind CSS
           </p>
         </div>
       </footer>

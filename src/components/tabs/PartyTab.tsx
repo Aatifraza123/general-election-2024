@@ -1,18 +1,34 @@
+import { useState, useMemo } from 'react';
 import { PartyPieChart } from '../dashboard/PartyPieChart';
 import { PartyBarChart } from '../dashboard/PartyBarChart';
 import { PartyLeaderboard } from '../dashboard/PartyLeaderboard';
 import { PartyBadge } from '../dashboard/PartyBadge';
 import { formatNumber, formatPercentage, getPartyShortName, getPartyColor } from '@/lib/analytics';
 import type { PartyStats, ConstituencyResult } from '@/types/election';
+import { Search } from 'lucide-react';
 
 interface PartyTabProps {
   partyStats: PartyStats[];
   voteShare: PartyStats[];
   constituencyData: ConstituencyResult[];
+  globalSearchQuery?: string;
 }
 
-export function PartyTab({ partyStats, voteShare, constituencyData }: PartyTabProps) {
-  const topParties = partyStats.slice(0, 6);
+export function PartyTab({ partyStats, voteShare, constituencyData, globalSearchQuery = '' }: PartyTabProps) {
+  const [searchQuery, setSearchQuery] = useState('');
+  
+  const effectiveSearchQuery = globalSearchQuery || searchQuery;
+  
+  const filteredPartyStats = useMemo(() => {
+    if (!effectiveSearchQuery.trim()) return partyStats;
+    const query = effectiveSearchQuery.toLowerCase();
+    return partyStats.filter(p => 
+      p.party.toLowerCase().includes(query) ||
+      getPartyShortName(p.party).toLowerCase().includes(query)
+    );
+  }, [partyStats, effectiveSearchQuery]);
+
+  const topParties = filteredPartyStats.slice(0, 6);
   
   // Calculate party-wise highest margins
   const partyHighestMargins = topParties.map(party => {
@@ -23,6 +39,27 @@ export function PartyTab({ partyStats, voteShare, constituencyData }: PartyTabPr
 
   return (
     <div className="space-y-6">
+      {/* Search Bar */}
+      <div className="glass-card p-4">
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+          <input
+            type="text"
+            placeholder="Search parties by name or abbreviation..."
+            value={globalSearchQuery || searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            disabled={!!globalSearchQuery}
+            className="w-full pl-11 pr-4 py-3 rounded-lg bg-background border border-border focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm disabled:opacity-60"
+          />
+        </div>
+        {effectiveSearchQuery && (
+          <p className="text-xs text-muted-foreground mt-2">
+            Found {filteredPartyStats.length} part{filteredPartyStats.length !== 1 ? 'ies' : 'y'}
+            {globalSearchQuery && ' (using global search)'}
+          </p>
+        )}
+      </div>
+
       {/* Party Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {topParties.map((party, index) => (
@@ -101,7 +138,7 @@ export function PartyTab({ partyStats, voteShare, constituencyData }: PartyTabPr
 
       {/* Party Comparison */}
       <PartyLeaderboard 
-        data={partyStats} 
+        data={filteredPartyStats} 
         title="Complete Party Rankings" 
         maxItems={15}
       />

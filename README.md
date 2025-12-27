@@ -1,54 +1,108 @@
-# Welcome to your Lovable project
+# Insight Navigator - India Election 2024 Analytics Dashboard
 
-## Project info
+A comprehensive analytics dashboard for the Indian General Elections 2024, providing detailed insights into constituency results, party performance, state-wise breakdowns, and key metrics from all 543 Lok Sabha seats.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+## Features
 
-## How can I edit this code?
+- 📊 Real-time election data visualization
+- 🗺️ Interactive maps powered by Mapbox GL
+- 📈 Party-wise performance analytics
+- 🏛️ Constituency-level results
+- 📱 Responsive design with dark mode support
+- 🔍 Advanced filtering and search capabilities
 
-There are several ways of editing your application.
+## Tech Stack
 
-**Use Lovable**
+- **Frontend**: React 18 + TypeScript
+- **Build Tool**: Vite
+- **UI Components**: shadcn/ui + Radix UI
+- **Styling**: Tailwind CSS
+- **Backend**: Supabase
+- **Data Visualization**: Recharts
+- **Maps**: Mapbox GL
+- **Routing**: React Router v6
+- **State Management**: TanStack Query (React Query)
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+## Getting Started
 
-Changes made via Lovable will be committed automatically to this repo.
+### Prerequisites
 
-**Use your preferred IDE**
+- Node.js (v18 or higher)
+- npm or yarn
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
+### Installation
 
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+# Clone the repository
+git clone https://github.com/Aatifraza123/insight-navigator.git
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+# Navigate to the project directory
+cd insight-navigator
 
-# Step 3: Install the necessary dependencies.
-npm i
+# Install dependencies
+npm install
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# Start the development server
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+The application will be available at `http://localhost:8080/`
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## Available Scripts
 
-**Use GitHub Codespaces**
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run build:dev` - Build in development mode
+- `npm run preview` - Preview production build
+- `npm run lint` - Run ESLint
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## Environment Variables
+
+Create a `.env` file in the root directory with the following variables:
+
+```env
+VITE_SUPABASE_PROJECT_ID=your_project_id
+VITE_SUPABASE_PUBLISHABLE_KEY=your_publishable_key
+VITE_SUPABASE_URL=your_supabase_url
+```
+
+## Project Structure
+
+```
+insight-navigator/
+├── public/           # Static assets
+│   └── data/        # Election data files
+├── src/
+│   ├── components/  # Reusable UI components
+│   ├── contexts/    # React contexts (Theme, etc.)
+│   ├── data/        # Data utilities and constants
+│   ├── hooks/       # Custom React hooks
+│   ├── integrations/# Third-party integrations (Supabase)
+│   ├── lib/         # Utility functions
+│   ├── pages/       # Page components
+│   └── types/       # TypeScript type definitions
+└── supabase/        # Supabase configuration
+```
+
+## Key Features Breakdown
+
+### Data Analytics
+- Comprehensive election results from 543 constituencies
+- Party-wise vote share analysis
+- Winner and runner-up statistics
+- Margin of victory calculations
+
+### Visualization
+- Interactive charts using Recharts
+- Geographic data representation with Mapbox
+- State-wise performance metrics
+- Trend analysis and comparisons
+
+### User Experience
+- Dark/Light theme toggle
+- Responsive design for all devices
+- Fast loading with optimized builds
+- Intuitive navigation and filtering
 
 ## What technologies are used for this project?
 
@@ -59,15 +113,38 @@ This project is built with:
 - React
 - shadcn-ui
 - Tailwind CSS
+- Supabase
+- Mapbox GL
+- Recharts
 
-## How can I deploy this project?
+## Deployment
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+### Build for Production
 
-## Can I connect a custom domain to my Lovable project?
+```sh
+npm run build
+```
 
-Yes, you can!
+The build output will be in the `dist/` directory.
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+### Preview Production Build
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+```sh
+npm run preview
+```
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## License
+
+This project is open source and available under the MIT License.
+
+## Contact
+
+For questions or feedback, please open an issue on GitHub.
+
+---
+
+Built with ❤️ for transparent election analytics

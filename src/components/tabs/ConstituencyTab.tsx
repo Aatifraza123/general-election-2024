@@ -2,7 +2,7 @@ import { useState, useMemo } from 'react';
 import { ConstituencyTable } from '../dashboard/ConstituencyTable';
 import { StatCard } from '../dashboard/StatCard';
 import { Filters } from '../dashboard/Filters';
-import { Award, TrendingDown, BarChart2 } from 'lucide-react';
+import { Award, TrendingDown, BarChart2, Search } from 'lucide-react';
 import { formatNumber } from '@/lib/analytics';
 import type { ConstituencyResult } from '@/types/election';
 
@@ -10,22 +10,37 @@ interface ConstituencyTabProps {
   constituencyData: ConstituencyResult[];
   states: string[];
   parties: string[];
+  globalSearchQuery?: string;
 }
 
-export function ConstituencyTab({ constituencyData, states, parties }: ConstituencyTabProps) {
+export function ConstituencyTab({ constituencyData, states, parties, globalSearchQuery = '' }: ConstituencyTabProps) {
   const [selectedState, setSelectedState] = useState('all');
   const [selectedParty, setSelectedParty] = useState('all');
+  const [searchQuery, setSearchQuery] = useState('');
+
+  // Use global search if provided, otherwise use local search
+  const effectiveSearchQuery = globalSearchQuery || searchQuery;
 
   const filteredData = useMemo(() => {
     let data = constituencyData;
     
-    // Note: sample_data doesn't have state info, so we filter by party only
+    // Filter by party
     if (selectedParty !== 'all') {
       data = data.filter(d => d.leadingParty === selectedParty);
     }
     
+    // Filter by search query (use effective search query)
+    if (effectiveSearchQuery.trim()) {
+      const query = effectiveSearchQuery.toLowerCase();
+      data = data.filter(d => 
+        d.constituency.toLowerCase().includes(query) ||
+        d.leadingCandidate.toLowerCase().includes(query) ||
+        d.leadingParty.toLowerCase().includes(query)
+      );
+    }
+    
     return data;
-  }, [constituencyData, selectedParty]);
+  }, [constituencyData, selectedParty, effectiveSearchQuery]);
 
   // Statistics
   const stats = useMemo(() => {
@@ -46,6 +61,27 @@ export function ConstituencyTab({ constituencyData, states, parties }: Constitue
 
   return (
     <div className="space-y-6">
+      {/* Search Bar */}
+      <div className="glass-card p-4">
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+          <input
+            type="text"
+            placeholder="Search by constituency, candidate, or party..."
+            value={globalSearchQuery || searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            disabled={!!globalSearchQuery}
+            className="w-full pl-11 pr-4 py-3 rounded-lg bg-background border border-border focus:outline-none focus:ring-2 focus:ring-primary/50 text-sm disabled:opacity-60"
+          />
+        </div>
+        {effectiveSearchQuery && (
+          <p className="text-xs text-muted-foreground mt-2">
+            Found {filteredData.length} result{filteredData.length !== 1 ? 's' : ''}
+            {globalSearchQuery && ' (using global search)'}
+          </p>
+        )}
+      </div>
+
       {/* Filters */}
       <Filters
         states={states}
@@ -54,7 +90,11 @@ export function ConstituencyTab({ constituencyData, states, parties }: Constitue
         selectedParty={selectedParty}
         onStateChange={setSelectedState}
         onPartyChange={setSelectedParty}
-        onClear={() => { setSelectedState('all'); setSelectedParty('all'); }}
+        onClear={() => { 
+          setSelectedState('all'); 
+          setSelectedParty('all'); 
+          setSearchQuery('');
+        }}
       />
 
       {/* Stats Summary */}

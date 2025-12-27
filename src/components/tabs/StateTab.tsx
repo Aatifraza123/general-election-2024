@@ -10,10 +10,18 @@ interface StateTabProps {
   stateStats: StateStats[];
   detailedData: DetailedResult[];
   states: string[];
+  globalSearchQuery?: string;
 }
 
-export function StateTab({ stateStats, detailedData, states }: StateTabProps) {
+export function StateTab({ stateStats, detailedData, states, globalSearchQuery = '' }: StateTabProps) {
   const [selectedState, setSelectedState] = useState<string>('all');
+
+  // Filter states by search query
+  const filteredStateStats = useMemo(() => {
+    if (!globalSearchQuery.trim()) return stateStats;
+    const query = globalSearchQuery.toLowerCase();
+    return stateStats.filter(s => s.state.toLowerCase().includes(query));
+  }, [stateStats, globalSearchQuery]);
 
   const selectedStateData = useMemo(() => {
     if (selectedState === 'all') return null;
@@ -67,15 +75,23 @@ export function StateTab({ stateStats, detailedData, states }: StateTabProps) {
 
       {selectedState === 'all' ? (
         <>
+          {globalSearchQuery && (
+            <div className="glass-card p-3 mb-4">
+              <p className="text-sm text-muted-foreground">
+                Found {filteredStateStats.length} state{filteredStateStats.length !== 1 ? 's' : ''} matching "{globalSearchQuery}"
+              </p>
+            </div>
+          )}
+
           {/* India Map */}
           <IndiaMap 
-            stateStats={stateStats} 
+            stateStats={filteredStateStats} 
             onStateClick={(state) => setSelectedState(state)}
           />
 
           {/* States Overview */}
           <StateBarChart 
-            data={stateStats} 
+            data={filteredStateStats} 
             title="Constituencies by State/UT" 
             maxItems={20}
           />
@@ -84,7 +100,7 @@ export function StateTab({ stateStats, detailedData, states }: StateTabProps) {
           <div className="chart-container">
             <h3 className="text-lg font-semibold mb-4">State-wise Party Distribution</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-h-[600px] overflow-y-auto scrollbar-thin">
-              {stateStats.slice(0, 15).map((state, index) => {
+              {filteredStateStats.slice(0, 15).map((state, index) => {
                 const topParties = Object.entries(state.parties)
                   .sort((a, b) => b[1] - a[1])
                   .slice(0, 3);

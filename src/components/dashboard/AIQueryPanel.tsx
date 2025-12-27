@@ -2,9 +2,9 @@ import { useState } from 'react';
 import { Send, Sparkles, Loader2, MessageSquare, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
+import { getAIAnswer } from '@/data/electionContext';
 
 interface Message {
   type: 'user' | 'ai';
@@ -111,12 +111,12 @@ function formatAIResponse(content: string) {
 }
 
 const EXAMPLE_QUESTIONS = [
-  "Which party won the most seats in South India?",
+  "What was the highest victory margin in 2024?",
+  "How many seats did BJP win?",
   "Compare BJP's 2024 performance with 2019",
-  "Who were the top candidates with highest victory margins?",
   "Which states did Congress gain the most seats?",
-  "How did Rahul Gandhi and Modi perform in their constituencies?",
   "What was SP's performance in Uttar Pradesh?",
+  "Who won from Varanasi?",
   "Explain the NDA vs INDIA bloc seat distribution",
   "Which parties gained and lost the most seats?",
 ];
@@ -136,34 +136,23 @@ export function AIQueryPanel() {
     setIsLoading(true);
 
     try {
-      const { data, error } = await supabase.functions.invoke('election-query', {
-        body: { question: questionText.trim() }
-      });
-
-      if (error) {
-        throw new Error(error.message || 'Failed to get response');
-      }
-
-      if (data?.error) {
-        throw new Error(data.error);
-      }
-
-      const aiMessage: Message = { type: 'ai', content: data.answer };
+      // Use Groq AI directly - no local fallback
+      const aiResponse = await getAIAnswer(questionText.trim());
+      const aiMessage: Message = { type: 'ai', content: aiResponse };
       setMessages(prev => [...prev, aiMessage]);
 
     } catch (error) {
-      console.error('Query error:', error);
-      const errorMessage = error instanceof Error ? error.message : 'Something went wrong';
+      console.error('AI error:', error);
       
       toast({
         title: "Error",
-        description: errorMessage,
+        description: "Could not get AI response. Please try again.",
         variant: "destructive",
       });
 
       setMessages(prev => [...prev, { 
         type: 'ai', 
-        content: `Sorry, I encountered an error: ${errorMessage}. Please try again.`
+        content: `Sorry, I encountered an error. Please try asking your question again.`
       }]);
     } finally {
       setIsLoading(false);
@@ -183,8 +172,8 @@ export function AIQueryPanel() {
           AI Election Analyst
         </h2>
         <p className="text-muted-foreground leading-relaxed">
-          Ask questions about the 2024 Indian General Elections in natural language. 
-          Get insights about party performance, regional analysis, comparisons with 2019, and more.
+          Ask questions about the 2024 Indian General Elections. 
+          Get instant answers about party performance, victory margins, and state-wise results.
         </p>
       </div>
 
@@ -291,7 +280,7 @@ export function AIQueryPanel() {
         </form>
         <p className="text-xs text-muted-foreground mt-2 flex items-center gap-1">
           <AlertCircle className="h-3 w-3" />
-          Powered by AI. Results are based on 2024 election data.
+          Powered by Gemini AI (with Groq fallback). Results based on 2024 election data.
         </p>
       </div>
     </div>

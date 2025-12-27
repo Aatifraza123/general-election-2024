@@ -1,54 +1,62 @@
-import { useEffect, useRef, useState, useMemo } from 'react';
-import mapboxgl from 'mapbox-gl';
-import 'mapbox-gl/dist/mapbox-gl.css';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { MapPin, Key, AlertCircle } from 'lucide-react';
+import { useMemo, useState } from 'react';
+import { MapPin, Info } from 'lucide-react';
 import { getPartyShortName, getPartyColor } from '@/lib/analytics';
 import type { StateStats } from '@/types/election';
 
-// India GeoJSON - simplified state boundaries
-const INDIA_GEOJSON_URL = 'https://raw.githubusercontent.com/geohacker/india/master/state/india_state.geojson';
-
-// State name mapping (GeoJSON names to our data names)
-const STATE_NAME_MAP: { [key: string]: string } = {
-  'Andaman and Nicobar': 'Andaman & Nicobar Islands',
-  'Arunachal Pradesh': 'Arunachal Pradesh',
-  'Assam': 'Assam',
-  'Bihar': 'Bihar',
-  'Chandigarh': 'Chandigarh',
-  'Chhattisgarh': 'Chhattisgarh',
-  'Dadra and Nagar Haveli': 'Dadra & Nagar Haveli and Daman & Diu',
-  'Daman and Diu': 'Dadra & Nagar Haveli and Daman & Diu',
-  'Delhi': 'NCT Of Delhi',
-  'Goa': 'Goa',
-  'Gujarat': 'Gujarat',
-  'Haryana': 'Haryana',
-  'Himachal Pradesh': 'Himachal Pradesh',
-  'Jammu and Kashmir': 'Jammu & Kashmir',
-  'Jharkhand': 'Jharkhand',
-  'Karnataka': 'Karnataka',
-  'Kerala': 'Kerala',
-  'Lakshadweep': 'Lakshadweep',
-  'Madhya Pradesh': 'Madhya Pradesh',
-  'Maharashtra': 'Maharashtra',
-  'Manipur': 'Manipur',
-  'Meghalaya': 'Meghalaya',
-  'Mizoram': 'Mizoram',
-  'Nagaland': 'Nagaland',
-  'Odisha': 'Odisha',
-  'Puducherry': 'Puducherry',
-  'Punjab': 'Punjab',
-  'Rajasthan': 'Rajasthan',
-  'Sikkim': 'Sikkim',
-  'Tamil Nadu': 'Tamil Nadu',
-  'Telangana': 'Telangana',
-  'Tripura': 'Tripura',
-  'Uttar Pradesh': 'Uttar Pradesh',
-  'Uttarakhand': 'Uttaranchal',
-  'West Bengal': 'West Bengal',
-  'Andhra Pradesh': 'Andhra Pradesh',
-  'Ladakh': 'Ladakh',
+// More accurate SVG India Map with better state paths
+const INDIA_SVG_MAP = {
+  viewBox: "0 0 800 1000",
+  states: {
+    // North
+    "Jammu & Kashmir": "M 180 40 L 220 30 L 250 40 L 260 70 L 240 95 L 210 90 L 180 75 Z",
+    "Ladakh": "M 150 20 L 180 15 L 200 35 L 190 55 L 160 50 Z",
+    "Himachal Pradesh": "M 210 95 L 240 90 L 260 105 L 250 125 L 220 120 Z",
+    "Punjab": "M 190 120 L 220 115 L 240 135 L 230 155 L 200 150 Z",
+    "Chandigarh": "M 215 140 L 220 137 L 223 143 L 218 148 L 215 145 Z",
+    "Uttaranchal": "M 250 130 L 280 125 L 300 145 L 290 165 L 260 160 Z",
+    "Haryana": "M 200 155 L 230 150 L 250 170 L 240 190 L 210 185 Z",
+    "NCT Of Delhi": "M 225 175 L 235 170 L 240 180 L 235 190 L 225 185 Z",
+    
+    // West
+    "Rajasthan": "M 120 170 L 210 160 L 240 195 L 250 270 L 210 310 L 150 290 L 100 230 Z",
+    "Gujarat": "M 80 280 L 150 270 L 210 310 L 220 380 L 180 430 L 110 400 L 60 340 Z",
+    "Dadra & Nagar Haveli and Daman & Diu": "M 120 360 L 130 355 L 135 365 L 125 375 L 120 370 Z",
+    "Maharashtra": "M 180 400 L 280 390 L 330 440 L 320 520 L 250 550 L 180 520 L 140 460 Z",
+    "Goa": "M 170 520 L 190 515 L 200 535 L 185 550 L 170 545 Z",
+    
+    // Central
+    "Madhya Pradesh": "M 210 260 L 310 250 L 350 300 L 340 380 L 280 400 L 220 360 Z",
+    "Chhattisgarh": "M 310 300 L 380 295 L 400 340 L 390 400 L 340 420 L 300 380 Z",
+    
+    // East
+    "Uttar Pradesh": "M 250 175 L 350 170 L 410 195 L 420 245 L 390 275 L 310 265 L 260 245 Z",
+    "Bihar": "M 410 200 L 480 195 L 510 220 L 500 250 L 450 255 L 420 240 Z",
+    "Jharkhand": "M 390 280 L 450 275 L 470 315 L 450 355 L 400 360 L 380 325 Z",
+    "West Bengal": "M 450 260 L 510 255 L 530 300 L 520 350 L 470 360 L 440 320 Z",
+    "Odisha": "M 400 365 L 470 360 L 490 410 L 470 470 L 410 480 L 380 440 Z",
+    
+    // Northeast
+    "Sikkim": "M 510 230 L 525 225 L 535 240 L 525 255 L 510 250 Z",
+    "Assam": "M 510 255 L 580 250 L 610 280 L 600 310 L 550 315 L 510 295 Z",
+    "Arunachal Pradesh": "M 530 210 L 610 200 L 650 230 L 640 270 L 580 280 L 530 260 Z",
+    "Nagaland": "M 640 270 L 660 265 L 670 285 L 655 300 L 640 295 Z",
+    "Manipur": "M 640 300 L 660 295 L 670 315 L 655 330 L 640 325 Z",
+    "Mizoram": "M 630 330 L 645 325 L 655 345 L 640 360 L 625 355 Z",
+    "Tripura": "M 610 310 L 630 305 L 640 325 L 625 340 L 610 335 Z",
+    "Meghalaya": "M 580 285 L 610 280 L 625 300 L 610 315 L 580 310 Z",
+    
+    // South
+    "Telangana": "M 320 420 L 380 415 L 410 460 L 400 520 L 350 540 L 320 500 Z",
+    "Andhra Pradesh": "M 330 520 L 410 510 L 450 560 L 440 630 L 380 660 L 330 640 Z",
+    "Karnataka": "M 190 550 L 290 540 L 330 600 L 310 680 L 240 700 L 190 660 Z",
+    "Tamil Nadu": "M 240 700 L 310 690 L 350 740 L 340 820 L 280 850 L 220 820 L 200 760 Z",
+    "Kerala": "M 190 660 L 240 650 L 260 710 L 250 790 L 210 820 L 180 780 Z",
+    "Puducherry": "M 310 730 L 320 725 L 325 735 L 315 745 L 310 740 Z",
+    
+    // Islands
+    "Andaman & Nicobar Islands": "M 480 780 L 490 775 L 500 800 L 490 825 L 480 820 Z",
+    "Lakshadweep": "M 110 730 L 120 725 L 125 735 L 115 745 L 110 740 Z",
+  }
 };
 
 interface IndiaMapProps {
@@ -57,17 +65,12 @@ interface IndiaMapProps {
 }
 
 export function IndiaMap({ stateStats, onStateClick }: IndiaMapProps) {
-  const mapContainer = useRef<HTMLDivElement>(null);
-  const map = useRef<mapboxgl.Map | null>(null);
-  const popup = useRef<mapboxgl.Popup | null>(null);
-  const [mapboxToken, setMapboxToken] = useState(() => localStorage.getItem('mapbox_token') || '');
-  const [tokenInput, setTokenInput] = useState('');
-  const [isMapReady, setIsMapReady] = useState(false);
-  const [geoJsonData, setGeoJsonData] = useState<any>(null);
+  const [hoveredState, setHoveredState] = useState<string | null>(null);
+  const [selectedState, setSelectedState] = useState<string | null>(null);
 
   // Calculate dominant party per state
-  const stateDominantParty = useMemo(() => {
-    const result: { [state: string]: { party: string; seats: number; total: number } } = {};
+  const statePartyData = useMemo(() => {
+    const result: { [state: string]: { party: string; seats: number; total: number; color: string } } = {};
     
     stateStats.forEach(state => {
       const parties = Object.entries(state.parties);
@@ -76,7 +79,8 @@ export function IndiaMap({ stateStats, onStateClick }: IndiaMapProps) {
         result[state.state] = {
           party: dominant[0],
           seats: dominant[1],
-          total: state.totalSeats
+          total: state.totalSeats,
+          color: getPartyColor(dominant[0])
         };
       }
     });
@@ -84,228 +88,22 @@ export function IndiaMap({ stateStats, onStateClick }: IndiaMapProps) {
     return result;
   }, [stateStats]);
 
-  // Load GeoJSON
-  useEffect(() => {
-    fetch(INDIA_GEOJSON_URL)
-      .then(res => res.json())
-      .then(data => {
-        // Enrich with party data
-        data.features = data.features.map((feature: any) => {
-          const geoName = feature.properties.NAME_1;
-          const dataName = STATE_NAME_MAP[geoName] || geoName;
-          const partyData = stateDominantParty[dataName];
-          
-          return {
-            ...feature,
-            properties: {
-              ...feature.properties,
-              dataName,
-              dominantParty: partyData?.party || 'Unknown',
-              partySeats: partyData?.seats || 0,
-              totalSeats: partyData?.total || 0,
-              partyColor: partyData ? getPartyColor(partyData.party) : 'hsl(220, 10%, 50%)',
-            }
-          };
-        });
-        setGeoJsonData(data);
-      })
-      .catch(console.error);
-  }, [stateDominantParty]);
-
-  // Initialize map
-  useEffect(() => {
-    if (!mapContainer.current || !mapboxToken || !geoJsonData) return;
-
-    mapboxgl.accessToken = mapboxToken;
-
-    try {
-      map.current = new mapboxgl.Map({
-        container: mapContainer.current,
-        style: 'mapbox://styles/mapbox/dark-v11',
-        center: [82, 22],
-        zoom: 4,
-        pitch: 0,
-        minZoom: 3,
-        maxZoom: 8,
-      });
-
-      popup.current = new mapboxgl.Popup({
-        closeButton: false,
-        closeOnClick: false,
-        className: 'india-map-popup'
-      });
-
-      map.current.addControl(new mapboxgl.NavigationControl(), 'top-right');
-
-      map.current.on('load', () => {
-        if (!map.current) return;
-
-        // Add source
-        map.current.addSource('india-states', {
-          type: 'geojson',
-          data: geoJsonData
-        });
-
-        // Add fill layer
-        map.current.addLayer({
-          id: 'states-fill',
-          type: 'fill',
-          source: 'india-states',
-          paint: {
-            'fill-color': ['get', 'partyColor'],
-            'fill-opacity': [
-              'case',
-              ['boolean', ['feature-state', 'hover'], false],
-              0.9,
-              0.7
-            ]
-          }
-        });
-
-        // Add border layer
-        map.current.addLayer({
-          id: 'states-border',
-          type: 'line',
-          source: 'india-states',
-          paint: {
-            'line-color': 'hsl(220, 20%, 20%)',
-            'line-width': [
-              'case',
-              ['boolean', ['feature-state', 'hover'], false],
-              2,
-              0.5
-            ]
-          }
-        });
-
-        // Hover interaction
-        let hoveredStateId: string | number | null = null;
-
-        map.current.on('mousemove', 'states-fill', (e) => {
-          if (!map.current || !e.features || e.features.length === 0) return;
-
-          if (hoveredStateId !== null) {
-            map.current.setFeatureState(
-              { source: 'india-states', id: hoveredStateId },
-              { hover: false }
-            );
-          }
-
-          hoveredStateId = e.features[0].id ?? null;
-          
-          if (hoveredStateId !== null) {
-            map.current.setFeatureState(
-              { source: 'india-states', id: hoveredStateId },
-              { hover: true }
-            );
-          }
-
-          const props = e.features[0].properties;
-          const stateName = props?.dataName || props?.NAME_1 || 'Unknown';
-          const party = props?.dominantParty || 'Unknown';
-          const seats = props?.partySeats || 0;
-          const total = props?.totalSeats || 0;
-
-          popup.current?.setLngLat(e.lngLat).setHTML(`
-            <div class="p-2">
-              <h4 class="font-bold text-sm">${stateName}</h4>
-              <p class="text-xs mt-1">
-                <span class="inline-block w-2 h-2 rounded-full mr-1" style="background: ${props?.partyColor}"></span>
-                ${getPartyShortName(party)}: ${seats}/${total} seats
-              </p>
-            </div>
-          `).addTo(map.current!);
-
-          map.current!.getCanvas().style.cursor = 'pointer';
-        });
-
-        map.current.on('mouseleave', 'states-fill', () => {
-          if (!map.current) return;
-          
-          if (hoveredStateId !== null) {
-            map.current.setFeatureState(
-              { source: 'india-states', id: hoveredStateId },
-              { hover: false }
-            );
-          }
-          hoveredStateId = null;
-          popup.current?.remove();
-          map.current.getCanvas().style.cursor = '';
-        });
-
-        // Click interaction
-        map.current.on('click', 'states-fill', (e) => {
-          if (!e.features || e.features.length === 0) return;
-          const stateName = e.features[0].properties?.dataName;
-          if (stateName && onStateClick) {
-            onStateClick(stateName);
-          }
-        });
-
-        setIsMapReady(true);
-      });
-
-    } catch (error) {
-      console.error('Map initialization failed:', error);
-      localStorage.removeItem('mapbox_token');
-      setMapboxToken('');
-    }
-
-    return () => {
-      map.current?.remove();
-    };
-  }, [mapboxToken, geoJsonData, onStateClick]);
-
-  const handleSaveToken = () => {
-    if (tokenInput.trim()) {
-      localStorage.setItem('mapbox_token', tokenInput.trim());
-      setMapboxToken(tokenInput.trim());
-    }
+  const handleStateClick = (stateName: string) => {
+    setSelectedState(stateName);
+    onStateClick?.(stateName);
   };
 
-  if (!mapboxToken) {
-    return (
-      <div className="chart-container">
-        <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-          <MapPin className="h-5 w-5 text-primary" />
-          State-wise Election Map
-        </h3>
-        <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
-          <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mb-4">
-            <Key className="h-8 w-8 text-primary" />
-          </div>
-          <h4 className="font-semibold text-lg mb-2">Mapbox Token Required</h4>
-          <p className="text-muted-foreground text-sm mb-6 max-w-md">
-            To display the interactive India map, please enter your Mapbox public token. 
-            You can get one for free at{' '}
-            <a 
-              href="https://mapbox.com" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="text-primary hover:underline"
-            >
-              mapbox.com
-            </a>
-          </p>
-          <div className="flex gap-2 w-full max-w-md">
-            <Input
-              placeholder="pk.eyJ1Ijoi..."
-              value={tokenInput}
-              onChange={(e) => setTokenInput(e.target.value)}
-              className="flex-1"
-            />
-            <Button onClick={handleSaveToken} disabled={!tokenInput.trim()}>
-              Save & Load
-            </Button>
-          </div>
-          <p className="text-xs text-muted-foreground mt-3 flex items-center gap-1">
-            <AlertCircle className="h-3 w-3" />
-            Your token is stored locally in your browser
-          </p>
-        </div>
-      </div>
-    );
-  }
+  const getStateColor = (stateName: string) => {
+    const data = statePartyData[stateName];
+    if (!data) return 'hsl(220, 10%, 40%)';
+    return data.color;
+  };
+
+  const getStateOpacity = (stateName: string) => {
+    if (hoveredState === stateName) return 0.9;
+    if (selectedState === stateName) return 1;
+    return 0.7;
+  };
 
   return (
     <div className="chart-container">
@@ -314,55 +112,168 @@ export function IndiaMap({ stateStats, onStateClick }: IndiaMapProps) {
           <MapPin className="h-5 w-5 text-primary" />
           State-wise Election Map
         </h3>
-        <Button 
-          variant="ghost" 
-          size="sm" 
-          onClick={() => { 
-            localStorage.removeItem('mapbox_token'); 
-            setMapboxToken(''); 
-          }}
-          className="text-muted-foreground text-xs"
-        >
-          Reset Token
-        </Button>
+        {selectedState && (
+          <button
+            onClick={() => setSelectedState(null)}
+            className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+          >
+            Clear Selection
+          </button>
+        )}
       </div>
-      <p className="text-sm text-muted-foreground mb-4">
-        States colored by dominant winning party. Hover for details, click to explore.
+      <p className="text-sm text-muted-foreground mb-4 flex items-center gap-2">
+        <Info className="h-4 w-4" />
+        Interactive map showing dominant party per state. Hover for details, click to select.
       </p>
       
-      <div className="relative h-[500px] rounded-lg overflow-hidden border border-border">
-        <div ref={mapContainer} className="absolute inset-0" />
-        
-        {!isMapReady && (
-          <div className="absolute inset-0 flex items-center justify-center bg-muted/50">
-            <div className="animate-pulse text-muted-foreground">Loading map...</div>
+      <div className="relative bg-gradient-to-br from-muted/20 to-muted/40 rounded-lg p-6 border border-border shadow-lg">
+        <svg 
+          viewBox={INDIA_SVG_MAP.viewBox} 
+          className="w-full h-auto max-h-[700px]"
+          style={{ 
+            filter: 'drop-shadow(0 4px 6px rgba(0,0,0,0.1))',
+          }}
+        >
+          {/* Background */}
+          <rect x="0" y="0" width="800" height="1000" fill="transparent" />
+          
+          {/* States */}
+          {Object.entries(INDIA_SVG_MAP.states).map(([stateName, path]) => {
+            const data = statePartyData[stateName];
+            const isHovered = hoveredState === stateName;
+            const isSelected = selectedState === stateName;
+            
+            return (
+              <g key={stateName}>
+                <path
+                  d={path}
+                  fill={getStateColor(stateName)}
+                  fillOpacity={getStateOpacity(stateName)}
+                  stroke={isSelected ? "hsl(var(--primary))" : "hsl(var(--border))"}
+                  strokeWidth={isSelected ? "3" : isHovered ? "2" : "1"}
+                  className="transition-all duration-300 cursor-pointer hover:brightness-110"
+                  onMouseEnter={() => setHoveredState(stateName)}
+                  onMouseLeave={() => setHoveredState(null)}
+                  onClick={() => handleStateClick(stateName)}
+                  style={{
+                    transformOrigin: 'center',
+                    transform: isHovered ? 'scale(1.02)' : 'scale(1)',
+                  }}
+                />
+                {/* State Labels for larger states */}
+                {['Rajasthan', 'Madhya Pradesh', 'Maharashtra', 'Uttar Pradesh', 'Karnataka', 'Tamil Nadu'].includes(stateName) && (
+                  <text
+                    x={getStateLabelPosition(stateName).x}
+                    y={getStateLabelPosition(stateName).y}
+                    fontSize="10"
+                    fill="hsl(var(--foreground))"
+                    opacity="0.6"
+                    textAnchor="middle"
+                    pointerEvents="none"
+                    className="font-medium"
+                  >
+                    {stateName.split(' ')[0]}
+                  </text>
+                )}
+              </g>
+            );
+          })}
+        </svg>
+
+        {/* Enhanced Tooltip */}
+        {hoveredState && statePartyData[hoveredState] && (
+          <div className="absolute top-6 right-6 glass-card p-4 animate-slide-up z-10 min-w-[220px] shadow-xl border-2 border-primary/20">
+            <h4 className="font-bold text-base mb-3 flex items-center gap-2">
+              <MapPin className="h-4 w-4 text-primary" />
+              {hoveredState}
+            </h4>
+            <div className="space-y-2 text-sm">
+              <div className="flex items-center justify-between p-2 rounded bg-muted/50">
+                <span className="text-muted-foreground">Dominant Party:</span>
+                <span className="font-semibold flex items-center gap-2">
+                  <span 
+                    className="inline-block w-3 h-3 rounded-full shadow-sm"
+                    style={{ backgroundColor: statePartyData[hoveredState].color }}
+                  />
+                  {getPartyShortName(statePartyData[hoveredState].party)}
+                </span>
+              </div>
+              <div className="flex items-center justify-between p-2 rounded bg-muted/50">
+                <span className="text-muted-foreground">Seats Won:</span>
+                <span className="font-bold text-primary">
+                  {statePartyData[hoveredState].seats}/{statePartyData[hoveredState].total}
+                </span>
+              </div>
+              <div className="flex items-center justify-between p-2 rounded bg-muted/50">
+                <span className="text-muted-foreground">Win Rate:</span>
+                <span className="font-medium">
+                  {((statePartyData[hoveredState].seats / statePartyData[hoveredState].total) * 100).toFixed(0)}%
+                </span>
+              </div>
+            </div>
+            <p className="text-xs text-muted-foreground mt-3 italic">
+              Click to explore state details
+            </p>
+          </div>
+        )}
+
+        {/* Selected State Info */}
+        {selectedState && statePartyData[selectedState] && (
+          <div className="absolute bottom-6 left-6 glass-card p-3 z-10 border-2 border-primary">
+            <p className="text-xs font-medium text-primary mb-1">Selected State</p>
+            <p className="font-bold">{selectedState}</p>
           </div>
         )}
       </div>
 
-      {/* Legend */}
-      <div className="mt-4 flex flex-wrap gap-3">
-        {Object.entries(
-          stateStats.reduce((acc, state) => {
-            Object.entries(state.parties).forEach(([party, seats]) => {
-              acc[party] = (acc[party] || 0) + seats;
-            });
-            return acc;
-          }, {} as { [key: string]: number })
-        )
-          .sort((a, b) => b[1] - a[1])
-          .slice(0, 8)
-          .map(([party]) => (
-            <div key={party} className="flex items-center gap-1.5 text-xs">
+      {/* Enhanced Legend */}
+      <div className="mt-6 space-y-3">
+        <div className="flex items-center justify-between">
+          <p className="text-sm font-semibold text-foreground">Party Distribution</p>
+          <p className="text-xs text-muted-foreground">Top 10 parties by total seats</p>
+        </div>
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+          {Object.entries(
+            stateStats.reduce((acc, state) => {
+              Object.entries(state.parties).forEach(([party, seats]) => {
+                acc[party] = (acc[party] || 0) + seats;
+              });
+              return acc;
+            }, {} as { [key: string]: number })
+          )
+            .sort((a, b) => b[1] - a[1])
+            .slice(0, 10)
+            .map(([party, seats]) => (
               <div 
-                className="w-3 h-3 rounded-sm"
-                style={{ backgroundColor: getPartyColor(party) }}
-              />
-              <span className="text-muted-foreground">{getPartyShortName(party)}</span>
-            </div>
-          ))
-        }
+                key={party} 
+                className="flex items-center gap-2 p-2 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors"
+              >
+                <div 
+                  className="w-4 h-4 rounded shadow-sm flex-shrink-0"
+                  style={{ backgroundColor: getPartyColor(party) }}
+                />
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs font-medium truncate">{getPartyShortName(party)}</p>
+                  <p className="text-xs text-muted-foreground">{seats} seats</p>
+                </div>
+              </div>
+            ))
+          }
+        </div>
       </div>
     </div>
   );
+}
+
+// Helper function for state label positions
+function getStateLabelPosition(stateName: string): { x: number; y: number } {
+  const positions: { [key: string]: { x: number; y: number } } = {
+    'Rajasthan': { x: 165, y: 240 },
+    'Madhya Pradesh': { x: 275, y: 320 },
+    'Maharashtra': { x: 255, y: 470 },
+    'Uttar Pradesh': { x: 330, y: 220 },
+    'Karnataka': { x: 260, y: 620 },
+    'Tamil Nadu': { x: 280, y: 770 },
+  };
+  return positions[stateName] || { x: 0, y: 0 };
 }
