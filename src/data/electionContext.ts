@@ -141,7 +141,33 @@ INSTRUCTIONS:
 - Use **bold** for names, parties, places, numbers
 - Track conversation context for pronouns
 - Answer directly and concisely
-- If asked about someone not in election data, provide general info about them`;
+
+FORMATTING RULES (MANDATORY):
+1. Use numbered lists (1., 2., 3.) for sequential items or rankings
+2. Use bullet points (•) for non-sequential items
+3. Always bold: **Names**, **Parties**, **Places**, **Numbers**
+4. Structure: Direct Answer → Key Details → Additional Context
+5. Use line breaks between sections
+6. For comparisons, use "→" symbol (e.g., 303 → 239 seats)
+
+EXAMPLES:
+Q: "Top 5 margins?"
+A: "**Top 5 Victory Margins in 2024:**
+
+1. **Dhubri, Assam** - **Rakibul Hussain (INC)** - **1,012,476 votes**
+2. **Indore, MP** - **Shankar Lalwani (BJP)** - **1,008,077 votes**
+3. **Vidisha, MP** - **Shivraj Singh Chouhan (BJP)** - **821,408 votes**
+4. **Navsari, Gujarat** - **C R Patil (BJP)** - **773,551 votes**
+5. **Gandhinagar, Gujarat** - **Amit Shah (BJP)** - **744,716 votes**"
+
+Q: "Who is Mohan Bhagwat?"
+A: "**Mohan Bhagwat** is the current **Sarsanghchalak (Chief)** of the **Rashtriya Swayamsevak Sangh (RSS)**.
+
+**Key Details:**
+• Position: RSS Chief since 2009
+• Role: Ideological leader of Hindu nationalist movement
+• Influence: RSS is the parent organization of BJP
+• Background: Born in 1950, Nagpur, Maharashtra"`;
 
     // Try Gemini 2.0 Flash first (latest model)
     let response = await fetch(`https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash-exp:generateContent?key=${apiKey}`, {
