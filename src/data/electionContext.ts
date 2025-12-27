@@ -1,8 +1,5 @@
 // Comprehensive Election Data Context - Based on ACTUAL 2024 Results
-import { loadConstituencyWinners } from './loadConstituencyData';
-
-// Cache for constituency data
-let constituencyDataCache: string | null = null;
+import { getRelevantConstituencyData } from './loadConstituencyData';
 
 export const ELECTION_CONTEXT = `You are an expert analyst for Indian General Elections 2024. You have COMPLETE and ACCURATE data from the official Election Commission results.
 
@@ -244,13 +241,11 @@ export const getAIAnswer = async (question: string, conversationHistory: Array<{
   const groqKey = import.meta.env.VITE_GROQ_API_KEY;
   const geminiKey = import.meta.env.VITE_GEMINI_API_KEY;
   
-  // Load constituency data if not cached
-  if (!constituencyDataCache) {
-    constituencyDataCache = await loadConstituencyWinners();
-  }
+  // Load only relevant constituency data based on question
+  const constituencyData = await getRelevantConstituencyData(question);
   
-  // Combine base context with constituency data
-  const fullContext = ELECTION_CONTEXT + constituencyDataCache;
+  // Combine base context with relevant constituency data
+  const fullContext = ELECTION_CONTEXT + constituencyData;
   
   // Try Gemini first if key is available (for latest info)
   if (geminiKey) {
@@ -469,7 +464,7 @@ CRITICAL INSTRUCTIONS FOR GEMINI AI:
     }
 
     // Try Gemini 2.0 Flash first (latest model)
-    let response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key=${apiKey}`, {
+    let response = await fetch(`https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash-exp:generateContent?key=${apiKey}`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -510,7 +505,7 @@ CRITICAL INSTRUCTIONS FOR GEMINI AI:
     // Fallback to Gemini 1.5 Flash if 2.0 fails
     if (!response.ok) {
       console.log('Gemini 2.0 failed, trying 1.5 Flash...');
-      response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+      response = await fetch(`https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
