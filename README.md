@@ -119,6 +119,41 @@ This project is built with:
 
 ## Deployment
 
+### Vercel Deployment
+
+1. **Via Vercel Dashboard:**
+   - Go to [vercel.com](https://vercel.com)
+   - Click "Add New Project"
+   - Import your GitHub repository: `https://github.com/Aatifraza123/general-election-2024.git`
+   - Vercel will auto-detect Vite configuration
+   - Add environment variables:
+     - `VITE_GROQ_API_KEY`
+     - `VITE_GEMINI_API_KEY`
+   - Click "Deploy"
+
+2. **Via Vercel CLI:**
+   ```sh
+   npm i -g vercel
+   vercel login
+   vercel --prod
+   ```
+
+### Render Deployment
+
+1. **Via Render Dashboard:**
+   - Go to [render.com](https://render.com)
+   - Click "New Static Site"
+   - Connect your GitHub repository: `https://github.com/Aatifraza123/general-election-2024.git`
+   - Render will auto-detect `render.yaml` configuration
+   - Add environment variables in the dashboard:
+     - `VITE_GROQ_API_KEY`
+     - `VITE_GEMINI_API_KEY`
+   - Click "Create Static Site"
+
+2. **Configuration (already included in render.yaml):**
+   - Build Command: `npm install && npm run build`
+   - Publish Directory: `dist`
+
 ### Build for Production
 
 ```sh
