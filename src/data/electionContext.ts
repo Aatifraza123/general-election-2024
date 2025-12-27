@@ -16,19 +16,19 @@ B. GENERAL INFO (use your knowledge): who is X person, what is Y organization, g
 C. COMBINED: "How did PM Modi perform?" → use both knowledge + election data
 
 === PARTY RESULTS 2024 ===
-BJP: 239 | INC: 99 | SP: 36 | TMC: 29 | DMK: 22 | TDP: 16 | JDU: 12 | SS-UBT: 9 | NCP-SP: 8 | Shiv Sena: 7 | IND: 7 | LJP: 5 | CPM: 4 | YSRCP: 4 | RJD: 3 | JMM: 3 | AAP: 3 | IUML: 3 | JKNC: 2 | JSP: 2 | CPI: 2 | VCK: 2 | RLD: 2 | JDS: 2
+BJP: 240 | INC: 99 | SP: 37 | TMC: 29 | DMK: 22 | TDP: 16 | JDU: 12 | SS-UBT: 10 | NCP-SP: 8 | Shiv Sena: 7 | IND: 7 | LJP: 5 | CPM: 4 | YSRCP: 4 | RJD: 4 | JMM: 3 | AAP: 3 | IUML: 3 | JKNC: 2 | JSP: 2 | CPI: 2 | VCK: 2 | RLD: 2 | JDS: 2
 
 === STATE RESULTS (TOP 10) ===
-UP (79): SP 36, BJP 33, INC 6, RLD 2
-Maharashtra (48): INC 13, BJP 9, SS-UBT 9, NCP-SP 8, Shiv Sena 7
+UP (80): SP 37, BJP 33, INC 6, RLD 2, Others 2
+Maharashtra (48): INC 13, BJP 9, SS-UBT 10, NCP-SP 8, Shiv Sena 7, Others 1
 West Bengal (42): TMC 29, BJP 12, INC 1
-Tamil Nadu (39): DMK 22, INC 9, CPM 2, CPI 2, VCK 2
-Bihar (38): JDU 12, BJP 11, LJP 5, INC 3, RJD 3
+Tamil Nadu (39): DMK 22, INC 9, CPM 2, CPI 2, VCK 2, Others 2
+Bihar (40): JDU 12, BJP 12, LJP 5, INC 3, RJD 4, Others 4
 MP (29): BJP 29
 Karnataka (28): BJP 17, INC 9, JDS 2
 Gujarat (26): BJP 25, INC 1
 AP (25): TDP 16, YSRCP 4, BJP 3, JSP 2
-Rajasthan (25): BJP 14, INC 8
+Rajasthan (25): BJP 14, INC 8, Others 3
 
 === TOP 5 MARGINS ===
 1. Dhubri, Assam - Rakibul Hussain (INC): 1,012,476
@@ -45,15 +45,16 @@ Gandhinagar: Amit Shah (BJP) - 1,020,751, beat Sonal Patel (INC) - 276,035, marg
 Siwan: Vijaylakshmi Devi (JDU) - 386,508, beat Awadesh Kumar Singh (RJD) - 367,076, margin 19,432
 
 === 2019 vs 2024 COMPARISON ===
-BJP: 303 → 239 (-64 seats)
+BJP: 303 → 240 (-63 seats)
 INC: 52 → 99 (+47 seats)
-SP: 5 → 36 (+31 seats)
+SP: 5 → 37 (+32 seats)
 TMC: 22 → 29 (+7 seats)
 DMK: 23 → 22 (-1 seat)
-TDP: 0 → 16 (+16 seats)
+TDP: 3 → 16 (+13 seats)
 JDU: 16 → 12 (-4 seats)
+SS-UBT: 0 → 10 (+10 seats, split from Shiv Sena)
 
-NDA 2024: ~292 seats (BJP + allies)
+NDA 2024: ~293 seats (BJP + allies)
 INDIA 2024: ~234 seats (INC + allies)
 
 FORMATTING: Use **bold** for names, parties, places, numbers. Structure responses clearly.`;
@@ -148,7 +149,7 @@ FORMATTING RULES (MANDATORY):
 3. Always bold: **Names**, **Parties**, **Places**, **Numbers**
 4. Structure: Direct Answer → Key Details → Additional Context
 5. Use line breaks between sections
-6. For comparisons, use "→" symbol (e.g., 303 → 239 seats)
+6. For comparisons, use "→" symbol (e.g., 303 → 240 seats)
 
 EXAMPLES:
 Q: "Top 5 margins?"
