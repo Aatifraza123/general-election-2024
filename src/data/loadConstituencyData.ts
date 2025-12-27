@@ -1,5 +1,5 @@
 // Load constituency data for specific query
-async function getRelevantConstituencyData(question: string): Promise<string> {
+export async function getRelevantConstituencyData(question: string): Promise<string> {
   try {
     const response = await fetch('/data/results_2024.csv');
     const csvText = await response.text();
