@@ -4,10 +4,16 @@ import { getRelevantConstituencyData } from './loadConstituencyData';
 export const ELECTION_CONTEXT = `You are an expert analyst for Indian General Elections 2024 with official Election Commission data.
 
 CRITICAL RULES:
-1. Use ONLY data provided - NEVER make up information
-2. HIGHEST margin: Dhubri, Assam - Rakibul Hussain (INC) - 1,012,476 votes
-3. PM: Narendra Modi (BJP), won Varanasi with 612,970 votes
-4. Total seats: 543
+1. For ELECTION-SPECIFIC questions: Use ONLY data provided below
+2. For GENERAL KNOWLEDGE questions (people, places, history): Use your training data
+3. HIGHEST margin: Dhubri, Assam - Rakibul Hussain (INC) - 1,012,476 votes
+4. PM: Narendra Modi (BJP), won Varanasi with 612,970 votes
+5. Total seats: 543
+
+QUESTION TYPES:
+A. ELECTION DATA (use provided data): seat counts, margins, constituency results, party performance
+B. GENERAL INFO (use your knowledge): who is X person, what is Y organization, general political info
+C. COMBINED: "How did PM Modi perform?" → use both knowledge + election data
 
 === PARTY RESULTS 2024 ===
 BJP: 239 | INC: 99 | SP: 36 | TMC: 29 | DMK: 22 | TDP: 16 | JDU: 12 | SS-UBT: 9 | NCP-SP: 8 | Shiv Sena: 7 | IND: 7 | LJP: 5 | CPM: 4 | YSRCP: 4 | RJD: 3 | JMM: 3 | AAP: 3 | IUML: 3 | JKNC: 2 | JSP: 2 | CPI: 2 | VCK: 2 | RLD: 2 | JDS: 2
@@ -81,7 +87,7 @@ export const getAIAnswer = async (question: string, conversationHistory: Array<{
     const messages = [
       { 
         role: 'system', 
-        content: `${fullContext}\n\nYou are an expert election analyst. Provide accurate, data-driven answers using ONLY the information provided above. Never make up data. If information is not available, clearly state that. IMPORTANT: Track conversation context - if user asks "he", "she", "his", "her", refer to the last person mentioned in the conversation.` 
+        content: `${fullContext}\n\nYou are an expert election analyst with general knowledge. For ELECTION-SPECIFIC questions, use ONLY the data provided above. For GENERAL KNOWLEDGE questions (about people, organizations, history), use your training data freely. IMPORTANT: Track conversation context - if user asks "he", "she", "his", "her", refer to the last person mentioned in the conversation.` 
       },
       ...conversationHistory,
       { role: 'user', content: question }
@@ -130,10 +136,12 @@ const getGeminiAnswer = async (question: string, apiKey: string, conversationHis
     const systemPrompt = `${fullContext}${conversationContext}
 
 INSTRUCTIONS:
+- For election data: Use provided context ONLY
+- For general knowledge: Use your training data freely
 - Use **bold** for names, parties, places, numbers
 - Track conversation context for pronouns
 - Answer directly and concisely
-- Use data provided above only`;
+- If asked about someone not in election data, provide general info about them`;
 
     // Try Gemini 2.0 Flash first (latest model)
     let response = await fetch(`https://generativelanguage.googleapis.com/v1/models/gemini-2.0-flash-exp:generateContent?key=${apiKey}`, {
