@@ -125,19 +125,14 @@ export function Dashboard() {
       {/* Footer */}
       <footer className="border-t border-border py-6 mt-12">
         <div className="container mx-auto px-4 text-center text-sm text-muted-foreground">
-          <p className="flex items-center justify-center gap-2 flex-wrap">
-            <span className="text-orange-500 text-lg">🗳️</span>
+          <p className="flex items-center justify-center gap-2">
+            <span className="text-orange-500">🗳️</span>
             <span className="font-semibold text-foreground">Insight Navigator</span>
-            <span className="hidden sm:inline">•</span>
-            <span className="font-medium">India General Elections 2024</span>
+            <span>•</span>
+            <span>India Elections 2024</span>
           </p>
-          <p className="mt-2 flex items-center justify-center gap-2 flex-wrap">
-            <span>📊 Data: Election Commission of India</span>
-            <span className="hidden sm:inline">•</span>
-            <span>🤖 AI: Gemini 2.0 & Groq</span>
-          </p>
-          <p className="mt-1 text-xs">
-            Built with React, TypeScript, Recharts & Tailwind CSS
+          <p className="mt-2">
+            Data from Election Commission of India
           </p>
         </div>
       </footer>
