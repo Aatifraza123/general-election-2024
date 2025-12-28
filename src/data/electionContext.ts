@@ -57,6 +57,43 @@ SS-UBT: 0 → 10 (+10 seats, split from Shiv Sena)
 NDA 2024: ~293 seats (BJP + allies)
 INDIA 2024: ~234 seats (INC + allies)
 
+=== 2019 ELECTION RESULTS (COMPLETE) ===
+BJP: 303 seats (37.4% vote share)
+INC: 52 seats (19.5% vote share)
+DMK: 23 seats
+TMC: 22 seats
+YSRCP: 22 seats
+Shiv Sena (undivided): 18 seats
+JDU: 16 seats
+BJD: 12 seats
+BSP: 10 seats
+LJP: 6 seats
+SP: 5 seats
+NCP (undivided): 5 seats
+JKNC: 3 seats
+IUML: 3 seats
+CPI(M): 3 seats
+TDP: 3 seats
+CPI: 2 seats
+SAD: 2 seats
+AIMIM: 2 seats
+AAP: 1 seat
+JMM: 1 seat
+JD(S): 1 seat
+SKM: 1 seat
+AIUDF: 1 seat
+Others: ~15 seats
+
+NDA 2019: ~353 seats (BJP + allies)
+UPA 2019: ~91 seats (INC + allies)
+
+KEY 2019 WINNERS:
+- PM: Narendra Modi (BJP) - Varanasi
+- Amit Shah (BJP) - Gandhinagar
+- Rajnath Singh (BJP) - Lucknow
+- Rahul Gandhi (INC) - Wayanad (lost Amethi to Smriti Irani)
+- Mamata Banerjee's TMC dominated West Bengal
+
 FORMATTING: Use **bold** for names, parties, places, numbers. Structure responses clearly.`;
 
 // Call Groq API for AI responses
