@@ -1,4 +1,4 @@
-// 2019 Indian General Election Results - Major Parties
+// 2019 Indian General Election Results - Complete Data
 // Source: Election Commission of India
 // Party names matched with 2024 CSV data (including exact spacing)
 
@@ -6,6 +6,14 @@ export interface Election2019Result {
   party: string;
   seats2019: number;
   voteShare2019: number;
+}
+
+export interface State2019Result {
+  state: string;
+  totalSeats: number;
+  bjpSeats: number;
+  incSeats: number;
+  otherParties: { party: string; seats: number }[];
 }
 
 export const ELECTION_2019_DATA: Election2019Result[] = [
@@ -57,6 +65,240 @@ export const ELECTION_2019_DATA: Election2019Result[] = [
   { party: 'Independent', seats2019: 4, voteShare2019: 2.97 },
 ];
 
+// State-wise 2019 Results for detailed comparison
+export const STATE_2019_RESULTS: State2019Result[] = [
+  {
+    state: 'Uttar Pradesh',
+    totalSeats: 80,
+    bjpSeats: 62,
+    incSeats: 1,
+    otherParties: [
+      { party: 'SP', seats: 5 },
+      { party: 'BSP', seats: 10 },
+      { party: 'Apna Dal', seats: 2 }
+    ]
+  },
+  {
+    state: 'Maharashtra',
+    totalSeats: 48,
+    bjpSeats: 23,
+    incSeats: 1,
+    otherParties: [
+      { party: 'Shiv Sena', seats: 18 },
+      { party: 'NCP', seats: 4 },
+      { party: 'Others', seats: 2 }
+    ]
+  },
+  {
+    state: 'West Bengal',
+    totalSeats: 42,
+    bjpSeats: 18,
+    incSeats: 0,
+    otherParties: [
+      { party: 'TMC', seats: 22 },
+      { party: 'Others', seats: 2 }
+    ]
+  },
+  {
+    state: 'Bihar',
+    totalSeats: 40,
+    bjpSeats: 17,
+    incSeats: 1,
+    otherParties: [
+      { party: 'JDU', seats: 16 },
+      { party: 'LJP', seats: 6 },
+      { party: 'Others', seats: 0 }
+    ]
+  },
+  {
+    state: 'Tamil Nadu',
+    totalSeats: 39,
+    bjpSeats: 0,
+    incSeats: 8,
+    otherParties: [
+      { party: 'DMK', seats: 23 },
+      { party: 'AIADMK', seats: 1 },
+      { party: 'Others', seats: 7 }
+    ]
+  },
+  {
+    state: 'Madhya Pradesh',
+    totalSeats: 29,
+    bjpSeats: 28,
+    incSeats: 1,
+    otherParties: []
+  },
+  {
+    state: 'Karnataka',
+    totalSeats: 28,
+    bjpSeats: 25,
+    incSeats: 1,
+    otherParties: [
+      { party: 'JDS', seats: 1 },
+      { party: 'Independent', seats: 1 }
+    ]
+  },
+  {
+    state: 'Gujarat',
+    totalSeats: 26,
+    bjpSeats: 26,
+    incSeats: 0,
+    otherParties: []
+  },
+  {
+    state: 'Rajasthan',
+    totalSeats: 25,
+    bjpSeats: 24,
+    incSeats: 0,
+    otherParties: [
+      { party: 'Independent', seats: 1 }
+    ]
+  },
+  {
+    state: 'Andhra Pradesh',
+    totalSeats: 25,
+    bjpSeats: 0,
+    incSeats: 0,
+    otherParties: [
+      { party: 'YSRCP', seats: 22 },
+      { party: 'TDP', seats: 3 }
+    ]
+  },
+  {
+    state: 'Odisha',
+    totalSeats: 21,
+    bjpSeats: 8,
+    incSeats: 0,
+    otherParties: [
+      { party: 'BJD', seats: 12 },
+      { party: 'Independent', seats: 1 }
+    ]
+  },
+  {
+    state: 'Kerala',
+    totalSeats: 20,
+    bjpSeats: 0,
+    incSeats: 15,
+    otherParties: [
+      { party: 'IUML', seats: 3 },
+      { party: 'CPI(M)', seats: 1 },
+      { party: 'Others', seats: 1 }
+    ]
+  },
+  {
+    state: 'Telangana',
+    totalSeats: 17,
+    bjpSeats: 4,
+    incSeats: 3,
+    otherParties: [
+      { party: 'TRS', seats: 9 },
+      { party: 'AIMIM', seats: 1 }
+    ]
+  },
+  {
+    state: 'Assam',
+    totalSeats: 14,
+    bjpSeats: 9,
+    incSeats: 3,
+    otherParties: [
+      { party: 'AIUDF', seats: 1 },
+      { party: 'Independent', seats: 1 }
+    ]
+  },
+  {
+    state: 'Jharkhand',
+    totalSeats: 14,
+    bjpSeats: 11,
+    incSeats: 0,
+    otherParties: [
+      { party: 'JMM', seats: 1 },
+      { party: 'Others', seats: 2 }
+    ]
+  },
+  {
+    state: 'Punjab',
+    totalSeats: 13,
+    bjpSeats: 2,
+    incSeats: 8,
+    otherParties: [
+      { party: 'SAD', seats: 2 },
+      { party: 'AAP', seats: 1 }
+    ]
+  },
+  {
+    state: 'Chhattisgarh',
+    totalSeats: 11,
+    bjpSeats: 9,
+    incSeats: 2,
+    otherParties: []
+  },
+  {
+    state: 'Haryana',
+    totalSeats: 10,
+    bjpSeats: 10,
+    incSeats: 0,
+    otherParties: []
+  },
+  {
+    state: 'Delhi',
+    totalSeats: 7,
+    bjpSeats: 7,
+    incSeats: 0,
+    otherParties: []
+  }
+];
+
+// Alliance Performance 2019
+export const ALLIANCE_2019 = {
+  NDA: {
+    totalSeats: 353,
+    parties: [
+      { party: 'BJP', seats: 303 },
+      { party: 'JDU', seats: 16 },
+      { party: 'Shiv Sena', seats: 18 },
+      { party: 'LJP', seats: 6 },
+      { party: 'SAD', seats: 2 },
+      { party: 'Apna Dal', seats: 2 },
+      { party: 'Others', seats: 6 }
+    ]
+  },
+  UPA: {
+    totalSeats: 91,
+    parties: [
+      { party: 'INC', seats: 52 },
+      { party: 'DMK', seats: 23 },
+      { party: 'NCP', seats: 5 },
+      { party: 'IUML', seats: 3 },
+      { party: 'JKNC', seats: 3 },
+      { party: 'Others', seats: 5 }
+    ]
+  },
+  Others: {
+    totalSeats: 99,
+    majorParties: [
+      { party: 'TMC', seats: 22 },
+      { party: 'YSRCP', seats: 22 },
+      { party: 'BJD', seats: 12 },
+      { party: 'BSP', seats: 10 },
+      { party: 'TRS', seats: 9 },
+      { party: 'SP', seats: 5 },
+      { party: 'Others', seats: 19 }
+    ]
+  }
+};
+
+// Key 2019 Constituencies
+export const KEY_2019_CONSTITUENCIES = [
+  { constituency: 'Varanasi', state: 'UP', winner: 'Narendra Modi', party: 'BJP', votes: 674664, margin: 479505 },
+  { constituency: 'Gandhinagar', state: 'Gujarat', winner: 'Amit Shah', party: 'BJP', votes: 908769, margin: 557589 },
+  { constituency: 'Lucknow', state: 'UP', winner: 'Rajnath Singh', party: 'BJP', votes: 679272, margin: 347137 },
+  { constituency: 'Amethi', state: 'UP', winner: 'Smriti Irani', party: 'BJP', votes: 468514, margin: 55120 },
+  { constituency: 'Wayanad', state: 'Kerala', winner: 'Rahul Gandhi', party: 'INC', votes: 706367, margin: 431770 },
+  { constituency: 'Rae Bareli', state: 'UP', winner: 'Sonia Gandhi', party: 'INC', votes: 674277, margin: 167178 },
+  { constituency: 'Bhopal', state: 'MP', winner: 'Pragya Thakur', party: 'BJP', votes: 864218, margin: 364822 },
+  { constituency: 'Indore', state: 'MP', winner: 'Shankar Lalwani', party: 'BJP', votes: 1066740, margin: 537715 }
+];
+
 export function get2019Seats(party: string): number {
   const match = ELECTION_2019_DATA.find(d => d.party === party);
   return match?.seats2019 || 0;
@@ -65,4 +307,12 @@ export function get2019Seats(party: string): number {
 export function get2019VoteShare(party: string): number {
   const match = ELECTION_2019_DATA.find(d => d.party === party);
   return match?.voteShare2019 || 0;
+}
+
+export function getState2019Result(state: string): State2019Result | undefined {
+  return STATE_2019_RESULTS.find(s => s.state === state);
+}
+
+export function get2019ConstituencyResult(constituency: string) {
+  return KEY_2019_CONSTITUENCIES.find(c => c.constituency === constituency);
 }
