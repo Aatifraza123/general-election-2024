@@ -26,15 +26,19 @@ export const PARTY_SHORT_NAMES: { [key: string]: string } = {
   'Dravida Munnetra Kazhagam': 'DMK',
   'Telugu Desam': 'TDP',
   'Janata Dal  (United)': 'JD(U)', // Note: 2 spaces in original name
+  'Janata Dal (United)': 'JD(U)', // Also handle single space version
   'Janata Dal  (Secular)': 'JD(S)', // Note: 2 spaces in original name
+  'Janata Dal (Secular)': 'JD(S)', // Also handle single space version
   'Shiv Sena': 'SS',
   'Shiv Sena (Uddhav Balasaheb Thackrey)': 'SS(UBT)',
   'Nationalist Congress Party – Sharadchandra Pawar': 'NCP(SP)',
   'Nationalist Congress Party': 'NCP',
   'Aam Aadmi Party': 'AAP',
   'Communist Party of India  (Marxist)': 'CPI(M)', // Note: 2 spaces
+  'Communist Party of India (Marxist)': 'CPI(M)', // Also handle single space version
   'Communist Party of India': 'CPI',
   'Communist Party of India  (Marxist-Leninist)  (Liberation)': 'CPI(ML)', // Note: 2 spaces
+  'Communist Party of India (Marxist-Leninist) (Liberation)': 'CPI(ML)', // Also handle single space version
   'Yuvajana Sramika Rythu Congress Party': 'YSRCP',
   'Rashtriya Janata Dal': 'RJD',
   'Biju Janata Dal': 'BJD',
@@ -43,6 +47,7 @@ export const PARTY_SHORT_NAMES: { [key: string]: string } = {
   'Jharkhand Mukti Morcha': 'JMM',
   'Rashtriya Lok Dal': 'RLD',
   'Lok Janshakti Party(Ram Vilas)': 'LJP(RV)', // Note: no space before (
+  'Lok Janshakti Party (Ram Vilas)': 'LJP(RV)', // Also handle space version
   'Indian Union Muslim League': 'IUML',
   'Jammu & Kashmir National Conference': 'JKNC',
   'Viduthalai Chiruthaigal Katchi': 'VCK',
@@ -62,6 +67,7 @@ export const PARTY_SHORT_NAMES: { [key: string]: string } = {
   'Voice of the People Party': 'VOPP',
   'United People\'s Party, Liberal': 'UPPL',
   'Zoram People\'s Movement': 'ZPM',
+  'All India United Democratic Front': 'AIUDF',
   'Independent': 'IND',
 };
 
