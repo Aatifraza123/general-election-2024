@@ -536,21 +536,33 @@ export function ComparisonTab({
 
                 {/* Pie Chart - Vote Share */}
                 <div className="chart-container">
-                  <h3 className="text-lg font-semibold mb-4">Vote Share Distribution</h3>
+                  <h3 className="text-lg font-semibold mb-4">Vote Share Distribution (2024)</h3>
                   <div className="h-[300px]">
                     <ResponsiveContainer width="100%" height="100%">
                       <PieChart>
                         <Pie
                           data={[
-                            { name: partyComparisonData.party1.name, value: partyComparisonData.party1.voteShare, fill: partyComparisonData.party1.color },
-                            { name: partyComparisonData.party2.name, value: partyComparisonData.party2.voteShare, fill: partyComparisonData.party2.color },
-                            { name: 'Others', value: 100 - partyComparisonData.party1.voteShare - partyComparisonData.party2.voteShare, fill: 'hsl(var(--muted))' }
+                            { 
+                              name: getPartyShortName(partyComparisonData.party1.name), 
+                              value: parseFloat(partyComparisonData.party1.voteShare.toFixed(2)), 
+                              fill: partyComparisonData.party1.color 
+                            },
+                            { 
+                              name: getPartyShortName(partyComparisonData.party2.name), 
+                              value: parseFloat(partyComparisonData.party2.voteShare.toFixed(2)), 
+                              fill: partyComparisonData.party2.color 
+                            },
+                            { 
+                              name: 'Others', 
+                              value: parseFloat((100 - partyComparisonData.party1.voteShare - partyComparisonData.party2.voteShare).toFixed(2)), 
+                              fill: 'hsl(var(--muted))' 
+                            }
                           ]}
                           cx="50%"
                           cy="50%"
-                          labelLine={false}
-                          label={({ name, value }) => `${name}: ${value.toFixed(1)}%`}
-                          outerRadius={80}
+                          labelLine={true}
+                          label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(1)}%`}
+                          outerRadius={90}
                           dataKey="value"
                         />
                         <Tooltip 
@@ -559,9 +571,13 @@ export function ComparisonTab({
                             border: '1px solid hsl(var(--border))',
                             borderRadius: '8px'
                           }}
-                          formatter={(value: number) => `${value.toFixed(2)}%`}
+                          formatter={(value: number) => [`${value.toFixed(2)}%`, 'Vote Share']}
                         />
-                        <Legend />
+                        <Legend 
+                          verticalAlign="bottom" 
+                          height={36}
+                          formatter={(value) => value}
+                        />
                       </PieChart>
                     </ResponsiveContainer>
                   </div>
