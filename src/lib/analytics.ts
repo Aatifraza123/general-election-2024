@@ -19,40 +19,48 @@ export const MAJOR_PARTIES = [
 ];
 
 export const PARTY_SHORT_NAMES: { [key: string]: string } = {
+  // Major parties
   'Bharatiya Janata Party': 'BJP',
   'Indian National Congress': 'INC',
   'Samajwadi Party': 'SP',
   'All India Trinamool Congress': 'TMC',
   'Dravida Munnetra Kazhagam': 'DMK',
   'Telugu Desam': 'TDP',
-  'Janata Dal  (United)': 'JD(U)', // Note: 2 spaces in original name
-  'Janata Dal (United)': 'JD(U)', // Also handle single space version
-  'Janata Dal  (Secular)': 'JD(S)', // Note: 2 spaces in original name
-  'Janata Dal (Secular)': 'JD(S)', // Also handle single space version
-  'Shiv Sena': 'SS',
-  'Shiv Sena (Uddhav Balasaheb Thackrey)': 'SS(UBT)',
-  'Nationalist Congress Party – Sharadchandra Pawar': 'NCP(SP)',
-  'Nationalist Congress Party': 'NCP',
-  'Aam Aadmi Party': 'AAP',
-  'Communist Party of India  (Marxist)': 'CPI(M)', // Note: 2 spaces
-  'Communist Party of India (Marxist)': 'CPI(M)', // Also handle single space version
-  'Communist Party of India': 'CPI',
-  'Communist Party of India  (Marxist-Leninist)  (Liberation)': 'CPI(ML)', // Note: 2 spaces
-  'Communist Party of India (Marxist-Leninist) (Liberation)': 'CPI(ML)', // Also handle single space version
   'Yuvajana Sramika Rythu Congress Party': 'YSRCP',
+  
+  // Janata Dal parties (note: 2 spaces before bracket in CSV)
+  'Janata Dal  (United)': 'JD(U)',
+  'Janata Dal  (Secular)': 'JD(S)',
+  
+  // Shiv Sena factions
+  'Shiv Sena': 'Shiv Sena',
+  'Shiv Sena (Uddhav Balasaheb Thackrey)': 'Shiv Sena (UBT)',
+  
+  // NCP factions
+  'Nationalist Congress Party': 'NCP',
+  'Nationalist Congress Party – Sharadchandra Pawar': 'NCP (SP)',
+  
+  // Communist parties (note: 2 spaces before bracket in CSV)
+  'Communist Party of India': 'CPI',
+  'Communist Party of India  (Marxist)': 'CPI(M)',
+  'Communist Party of India  (Marxist-Leninist)  (Liberation)': 'CPI(ML)(L)',
+  
+  // Other major parties
+  'Aam Aadmi Party': 'AAP',
   'Rashtriya Janata Dal': 'RJD',
   'Biju Janata Dal': 'BJD',
-  'Janasena Party': 'JSP',
-  'Shiromani Akali Dal': 'SAD',
+  'Bahujan Samaj Party': 'BSP',
   'Jharkhand Mukti Morcha': 'JMM',
+  'Shiromani Akali Dal': 'SAD',
+  
+  // Regional parties
+  'Janasena Party': 'JSP',
   'Rashtriya Lok Dal': 'RLD',
-  'Lok Janshakti Party(Ram Vilas)': 'LJP(RV)', // Note: no space before (
-  'Lok Janshakti Party (Ram Vilas)': 'LJP(RV)', // Also handle space version
+  'Lok Janshakti Party(Ram Vilas)': 'LJP(RV)',
   'Indian Union Muslim League': 'IUML',
   'Jammu & Kashmir National Conference': 'JKNC',
   'Viduthalai Chiruthaigal Katchi': 'VCK',
   'All India Majlis-E-Ittehadul Muslimeen': 'AIMIM',
-  'Bahujan Samaj Party': 'BSP',
   'Sikkim Krantikari Morcha': 'SKM',
   'AJSU Party': 'AJSU',
   'Rashtriya Loktantrik Party': 'RLP',
@@ -60,14 +68,13 @@ export const PARTY_SHORT_NAMES: { [key: string]: string } = {
   'Asom Gana Parishad': 'AGP',
   'Bharat Adivasi Party': 'BAP',
   'Aazad Samaj Party (Kanshi Ram)': 'ASPKR',
-  'Apna Dal (Soneylal)': 'AD(S)',
+  'Apna Dal (Soneylal)': 'Apna Dal (S)',
   'Hindustani Awam Morcha (Secular)': 'HAM(S)',
   'Marumalarchi Dravida Munnetra Kazhagam': 'MDMK',
   'Kerala Congress': 'KC',
   'Voice of the People Party': 'VOPP',
   'United People\'s Party, Liberal': 'UPPL',
   'Zoram People\'s Movement': 'ZPM',
-  'All India United Democratic Front': 'AIUDF',
   'Independent': 'IND',
 };
 
