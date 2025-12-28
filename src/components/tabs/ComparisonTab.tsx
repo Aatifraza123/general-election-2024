@@ -497,44 +497,85 @@ export function ComparisonTab({
                 </div>
               </div>
 
-              {/* Radar Chart */}
-              <div className="chart-container">
-                <h3 className="text-lg font-semibold mb-4">Performance Radar</h3>
-                <div className="h-[400px]">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <RadarChart data={[
-                      {
-                        metric: 'Seats',
-                        [partyComparisonData.party1.shortName]: (partyComparisonData.party1.seats / 543) * 100,
-                        [partyComparisonData.party2.shortName]: (partyComparisonData.party2.seats / 543) * 100,
-                      },
-                      {
-                        metric: 'Seat %',
-                        [partyComparisonData.party1.shortName]: partyComparisonData.party1.percentage,
-                        [partyComparisonData.party2.shortName]: partyComparisonData.party2.percentage,
-                      },
-                    ]}>
-                      <PolarGrid stroke="hsl(var(--border))" />
-                      <PolarAngleAxis dataKey="metric" tick={{ fill: 'hsl(var(--muted-foreground))' }} />
-                      <PolarRadiusAxis domain={[0, 100]} />
-                      <Radar 
-                        name={partyComparisonData.party1.shortName} 
-                        dataKey={partyComparisonData.party1.shortName} 
-                        stroke={partyComparisonData.party1.color} 
-                        fill={partyComparisonData.party1.color} 
-                        fillOpacity={0.3}
-                      />
-                      <Radar 
-                        name={partyComparisonData.party2.shortName} 
-                        dataKey={partyComparisonData.party2.shortName} 
-                        stroke={partyComparisonData.party2.color} 
-                        fill={partyComparisonData.party2.color} 
-                        fillOpacity={0.3}
-                      />
-                      <Legend />
-                      <Tooltip />
-                    </RadarChart>
-                  </ResponsiveContainer>
+              {/* Comparison Charts */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* Bar Chart - Seats Comparison */}
+                <div className="chart-container">
+                  <h3 className="text-lg font-semibold mb-4">Seats Comparison (2019 vs 2024)</h3>
+                  <div className="h-[300px]">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <BarChart data={[
+                        {
+                          year: '2019',
+                          [partyComparisonData.party1.name]: partyComparisonData.party1.seats2019,
+                          [partyComparisonData.party2.name]: partyComparisonData.party2.seats2019,
+                        },
+                        {
+                          year: '2024',
+                          [partyComparisonData.party1.name]: partyComparisonData.party1.seats,
+                          [partyComparisonData.party2.name]: partyComparisonData.party2.seats,
+                        },
+                      ]}>
+                        <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                        <XAxis dataKey="year" stroke="hsl(var(--muted-foreground))" />
+                        <YAxis stroke="hsl(var(--muted-foreground))" />
+                        <Tooltip 
+                          contentStyle={{ 
+                            backgroundColor: 'hsl(var(--background))', 
+                            border: '1px solid hsl(var(--border))',
+                            borderRadius: '8px'
+                          }} 
+                        />
+                        <Legend />
+                        <Bar dataKey={partyComparisonData.party1.name} fill={partyComparisonData.party1.color} radius={[8, 8, 0, 0]} />
+                        <Bar dataKey={partyComparisonData.party2.name} fill={partyComparisonData.party2.color} radius={[8, 8, 0, 0]} />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </div>
+                </div>
+
+                {/* Pie Chart - Vote Share */}
+                <div className="chart-container">
+                  <h3 className="text-lg font-semibold mb-4">Vote Share Distribution</h3>
+                  <div className="h-[300px]">
+                    <ResponsiveContainer width="100%" height="100%">
+                      <PieChart>
+                        <Pie
+                          data={[
+                            { name: partyComparisonData.party1.name, value: partyComparisonData.party1.voteShare },
+                            { name: partyComparisonData.party2.name, value: partyComparisonData.party2.voteShare },
+                            { name: 'Others', value: 100 - partyComparisonData.party1.voteShare - partyComparisonData.party2.voteShare }
+                          ]}
+                          cx="50%"
+                          cy="50%"
+                          labelLine={false}
+                          label={({ name, value }) => `${name}: ${value.toFixed(1)}%`}
+                          outerRadius={80}
+                          fill="#8884d8"
+                          dataKey="value"
+                        >
+                          <Pie dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80}>
+                            {[
+                              { fill: partyComparisonData.party1.color },
+                              { fill: partyComparisonData.party2.color },
+                              { fill: 'hsl(var(--muted))' }
+                            ].map((entry, index) => (
+                              <Pie key={`cell-${index}`} {...entry} />
+                            ))}
+                          </Pie>
+                        </Pie>
+                        <Tooltip 
+                          contentStyle={{ 
+                            backgroundColor: 'hsl(var(--background))', 
+                            border: '1px solid hsl(var(--border))',
+                            borderRadius: '8px'
+                          }}
+                          formatter={(value: number) => `${value.toFixed(2)}%`}
+                        />
+                        <Legend />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  </div>
                 </div>
               </div>
             </>
