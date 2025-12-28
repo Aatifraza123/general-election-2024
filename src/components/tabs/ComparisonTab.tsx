@@ -542,28 +542,17 @@ export function ComparisonTab({
                       <PieChart>
                         <Pie
                           data={[
-                            { name: partyComparisonData.party1.name, value: partyComparisonData.party1.voteShare },
-                            { name: partyComparisonData.party2.name, value: partyComparisonData.party2.voteShare },
-                            { name: 'Others', value: 100 - partyComparisonData.party1.voteShare - partyComparisonData.party2.voteShare }
+                            { name: partyComparisonData.party1.name, value: partyComparisonData.party1.voteShare, fill: partyComparisonData.party1.color },
+                            { name: partyComparisonData.party2.name, value: partyComparisonData.party2.voteShare, fill: partyComparisonData.party2.color },
+                            { name: 'Others', value: 100 - partyComparisonData.party1.voteShare - partyComparisonData.party2.voteShare, fill: 'hsl(var(--muted))' }
                           ]}
                           cx="50%"
                           cy="50%"
                           labelLine={false}
                           label={({ name, value }) => `${name}: ${value.toFixed(1)}%`}
                           outerRadius={80}
-                          fill="#8884d8"
                           dataKey="value"
-                        >
-                          <Pie dataKey="value" nameKey="name" cx="50%" cy="50%" outerRadius={80}>
-                            {[
-                              { fill: partyComparisonData.party1.color },
-                              { fill: partyComparisonData.party2.color },
-                              { fill: 'hsl(var(--muted))' }
-                            ].map((entry, index) => (
-                              <Pie key={`cell-${index}`} {...entry} />
-                            ))}
-                          </Pie>
-                        </Pie>
+                        />
                         <Tooltip 
                           contentStyle={{ 
                             backgroundColor: 'hsl(var(--background))', 
