@@ -536,7 +536,7 @@ export function ComparisonTab({
 
                 {/* Pie Chart - Vote Share */}
                 <div className="chart-container">
-                  <h3 className="text-lg font-semibold mb-4">Vote Share Distribution (2024)</h3>
+                  <h3 className="text-lg font-semibold mb-4">Vote Share Comparison (2024)</h3>
                   <div className="h-[300px]">
                     <ResponsiveContainer width="100%" height="100%">
                       <PieChart>
@@ -551,17 +551,12 @@ export function ComparisonTab({
                               name: getPartyShortName(partyComparisonData.party2.name), 
                               value: parseFloat(partyComparisonData.party2.voteShare.toFixed(2)), 
                               fill: partyComparisonData.party2.color 
-                            },
-                            { 
-                              name: 'Others', 
-                              value: parseFloat((100 - partyComparisonData.party1.voteShare - partyComparisonData.party2.voteShare).toFixed(2)), 
-                              fill: 'hsl(var(--muted))' 
                             }
                           ]}
                           cx="50%"
                           cy="50%"
                           labelLine={true}
-                          label={({ name, percent }) => `${name}: ${(percent * 100).toFixed(1)}%`}
+                          label={({ name, value }) => `${name}: ${value}%`}
                           outerRadius={90}
                           dataKey="value"
                         />
