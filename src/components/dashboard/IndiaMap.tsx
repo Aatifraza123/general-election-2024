@@ -59,8 +59,9 @@ const INDIA_SVG_MAP = {
   }
 };
 
-// State labels for major states
+// State labels for ALL states and UTs
 const STATE_LABELS = {
+  // Major States
   "Uttar Pradesh": { x: 330, y: 220, short: "UP" },
   "Maharashtra": { x: 230, y: 470, short: "MH" },
   "West Bengal": { x: 485, y: 310, short: "WB" },
@@ -79,6 +80,24 @@ const STATE_LABELS = {
   "Chhattisgarh": { x: 350, y: 350, short: "CG" },
   "Haryana": { x: 225, y: 170, short: "HR" },
   "Jharkhand": { x: 420, y: 320, short: "JH" },
+  // Smaller States
+  "Himachal Pradesh": { x: 230, y: 105, short: "HP" },
+  "Uttaranchal": { x: 275, y: 145, short: "UK" },
+  "Goa": { x: 180, y: 535, short: "GA" },
+  // Northeast
+  "Arunachal Pradesh": { x: 590, y: 235, short: "AR" },
+  "Nagaland": { x: 655, y: 285, short: "NL" },
+  "Manipur": { x: 655, y: 315, short: "MN" },
+  "Mizoram": { x: 640, y: 345, short: "MZ" },
+  "Tripura": { x: 620, y: 320, short: "TR" },
+  "Meghalaya": { x: 595, y: 295, short: "ML" },
+  "Sikkim": { x: 520, y: 240, short: "SK" },
+  // UTs
+  "Jammu & Kashmir": { x: 215, y: 65, short: "JK" },
+  "Ladakh": { x: 170, y: 35, short: "LA" },
+  "NCT Of Delhi": { x: 230, y: 182, short: "DL" },
+  "Chandigarh": { x: 218, y: 143, short: "CH" },
+  "Puducherry": { x: 315, y: 735, short: "PY" },
 };
 
 interface IndiaMapProps {
@@ -153,14 +172,14 @@ export function IndiaMap({ stateStats, onStateClick }: IndiaMapProps) {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* Map */}
-        <div className="lg:col-span-3 relative">
-          <div className="relative bg-gradient-to-br from-background to-muted/20 rounded-xl p-6 border border-border shadow-lg">
+        <div className="lg:col-span-2 relative">
+          <div className="relative bg-gradient-to-br from-background to-muted/20 rounded-lg p-4 border border-border shadow-lg">
             <svg
               viewBox={INDIA_SVG_MAP.viewBox}
-              className="w-full h-auto"
-              style={{ filter: 'drop-shadow(0 4px 6px rgba(0, 0, 0, 0.1))' }}
+              className="w-full h-auto max-h-[500px]"
+              style={{ filter: 'drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1))' }}
             >
               {/* Background */}
               <rect x="0" y="0" width="800" height="1000" fill="transparent" />
@@ -208,17 +227,17 @@ export function IndiaMap({ stateStats, onStateClick }: IndiaMapProps) {
 
             {/* Hover Tooltip */}
             {hoveredState && statePartyData[hoveredState] && (
-              <div className="absolute top-4 left-4 bg-background/95 backdrop-blur-sm border border-border rounded-lg p-4 shadow-xl animate-slide-up z-10">
-                <h4 className="font-bold text-sm mb-2">{hoveredState}</h4>
-                <div className="space-y-1 text-xs">
-                  <div className="flex items-center justify-between gap-4">
-                    <span className="text-muted-foreground">Dominant Party:</span>
+              <div className="absolute top-2 left-2 bg-background/95 backdrop-blur-sm border border-border rounded-lg p-3 shadow-xl animate-slide-up z-10">
+                <h4 className="font-bold text-xs mb-1">{hoveredState}</h4>
+                <div className="space-y-0.5 text-xs">
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="text-muted-foreground">Party:</span>
                     <span className="font-semibold" style={{ color: statePartyData[hoveredState].color }}>
                       {getPartyShortName(statePartyData[hoveredState].party)}
                     </span>
                   </div>
-                  <div className="flex items-center justify-between gap-4">
-                    <span className="text-muted-foreground">Seats Won:</span>
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="text-muted-foreground">Seats:</span>
                     <span className="font-semibold">
                       {statePartyData[hoveredState].seats}/{statePartyData[hoveredState].total}
                     </span>
@@ -230,24 +249,24 @@ export function IndiaMap({ stateStats, onStateClick }: IndiaMapProps) {
         </div>
 
         {/* Legend & Stats */}
-        <div className="space-y-4">
+        <div className="space-y-3">
           {/* Party Legend */}
-          <div className="stat-card">
-            <h4 className="font-semibold text-sm mb-3 flex items-center gap-2">
-              <Award className="h-4 w-4 text-orange-500" />
+          <div className="stat-card p-3">
+            <h4 className="font-semibold text-xs mb-2 flex items-center gap-2">
+              <Award className="h-3 w-3 text-orange-500" />
               Party Distribution
             </h4>
-            <div className="space-y-2">
+            <div className="space-y-1.5">
               {partyDistribution.map(([party, count]) => (
                 <div key={party} className="flex items-center justify-between text-xs">
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1.5">
                     <div
-                      className="w-3 h-3 rounded-full"
+                      className="w-2.5 h-2.5 rounded-full"
                       style={{ backgroundColor: getPartyColor(party) }}
                     />
-                    <span className="font-medium">{getPartyShortName(party)}</span>
+                    <span className="font-medium text-xs">{getPartyShortName(party)}</span>
                   </div>
-                  <span className="text-muted-foreground">{count} states</span>
+                  <span className="text-muted-foreground text-xs">{count}</span>
                 </div>
               ))}
             </div>
@@ -255,20 +274,16 @@ export function IndiaMap({ stateStats, onStateClick }: IndiaMapProps) {
 
           {/* Selected State Info */}
           {selectedState && statePartyData[selectedState] && (
-            <div className="stat-card border-l-4 animate-slide-up" style={{ borderLeftColor: statePartyData[selectedState].color }}>
-              <h4 className="font-bold text-sm mb-3">{selectedState}</h4>
-              <div className="space-y-2 text-xs">
+            <div className="stat-card p-3 border-l-4 animate-slide-up" style={{ borderLeftColor: statePartyData[selectedState].color }}>
+              <h4 className="font-bold text-xs mb-2">{selectedState}</h4>
+              <div className="space-y-1 text-xs">
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Dominant Party</span>
+                  <span className="text-muted-foreground">Party</span>
                   <span className="font-semibold">{getPartyShortName(statePartyData[selectedState].party)}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-muted-foreground">Seats Won</span>
-                  <span className="font-semibold">{statePartyData[selectedState].seats}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Total Seats</span>
-                  <span className="font-semibold">{statePartyData[selectedState].total}</span>
+                  <span className="text-muted-foreground">Seats</span>
+                  <span className="font-semibold">{statePartyData[selectedState].seats}/{statePartyData[selectedState].total}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Win %</span>
@@ -281,15 +296,15 @@ export function IndiaMap({ stateStats, onStateClick }: IndiaMapProps) {
           )}
 
           {/* Instructions */}
-          <div className="text-xs text-muted-foreground bg-muted/30 rounded-lg p-3">
-            <p className="flex items-center gap-2 mb-1">
+          <div className="text-xs text-muted-foreground bg-muted/30 rounded-lg p-2">
+            <p className="flex items-center gap-1.5 mb-1 font-medium">
               <TrendingUp className="h-3 w-3" />
-              <span className="font-medium">How to use:</span>
+              How to use:
             </p>
-            <ul className="space-y-1 ml-5 list-disc">
-              <li>Hover over states for details</li>
-              <li>Click to select a state</li>
-              <li>Colors show dominant party</li>
+            <ul className="space-y-0.5 ml-4 list-disc text-xs">
+              <li>Hover for details</li>
+              <li>Click to select</li>
+              <li>Colors = party</li>
             </ul>
           </div>
         </div>
