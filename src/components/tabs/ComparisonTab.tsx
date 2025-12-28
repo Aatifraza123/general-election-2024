@@ -370,10 +370,10 @@ export function ComparisonTab({
                   <SelectTrigger>
                     <SelectValue placeholder="Select first party" />
                   </SelectTrigger>
-                  <SelectContent>
-                    {parties.slice(0, 20).map(party => (
+                  <SelectContent className="max-h-[300px]">
+                    {parties.map(party => (
                       <SelectItem key={party} value={party}>
-                        {getPartyShortName(party)}
+                        {party}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -385,10 +385,10 @@ export function ComparisonTab({
                   <SelectTrigger>
                     <SelectValue placeholder="Select second party" />
                   </SelectTrigger>
-                  <SelectContent>
-                    {parties.slice(0, 20).map(party => (
+                  <SelectContent className="max-h-[300px]">
+                    {parties.map(party => (
                       <SelectItem key={party} value={party}>
-                        {getPartyShortName(party)}
+                        {party}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -401,7 +401,7 @@ export function ComparisonTab({
             <>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="stat-card" style={{ borderLeft: `4px solid ${partyComparisonData.party1.color}` }}>
-                  <h4 className="text-lg font-bold mb-4">{partyComparisonData.party1.shortName}</h4>
+                  <h4 className="text-lg font-bold mb-4">{partyComparisonData.party1.name}</h4>
                   <div className="space-y-3">
                     <div className="flex justify-between items-center">
                       <span className="text-muted-foreground">Seats Won (2024)</span>
@@ -449,7 +449,7 @@ export function ComparisonTab({
                 </div>
                 
                 <div className="stat-card" style={{ borderLeft: `4px solid ${partyComparisonData.party2.color}` }}>
-                  <h4 className="text-lg font-bold mb-4">{partyComparisonData.party2.shortName}</h4>
+                  <h4 className="text-lg font-bold mb-4">{partyComparisonData.party2.name}</h4>
                   <div className="space-y-3">
                     <div className="flex justify-between items-center">
                       <span className="text-muted-foreground">Seats Won (2024)</span>
